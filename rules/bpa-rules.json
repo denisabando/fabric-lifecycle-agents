@@ -1,0 +1,78 @@
+[
+  {
+    "ID": "FSM_MEASURES_ON_FACT",
+    "Name": "[Firm MS-03] Measures must live in _Measures",
+    "Category": "Firm standards",
+    "Description": "All measures belong in the _Measures table.",
+    "Severity": 3,
+    "Scope": "Measure",
+    "Expression": "Table.Name <> \"_Measures\"",
+    "FixExpression": null
+  },
+  {
+    "ID": "FSM_MEASURE_DESCRIPTION",
+    "Name": "[Firm DX-04 / MS-30] Measure has a description",
+    "Category": "Firm standards",
+    "Description": "Every measure needs a business-readable description (handover + AI readiness).",
+    "Severity": 3,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrWhiteSpace(Description)"
+  },
+  {
+    "ID": "FSM_MEASURE_FORMAT",
+    "Name": "[Firm DX-04] Measure has a format string",
+    "Category": "Firm standards",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrWhiteSpace(FormatString) and DataType <> DataType.String"
+  },
+  {
+    "ID": "FSM_DIVIDE",
+    "Name": "[Firm DX-10] Use DIVIDE instead of /",
+    "Category": "Firm standards",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "RegEx.IsMatch(Expression, \"(?<!DIVIDE\\\\s*\\\\()[^\\\\n]*\\\\]\\\\s*/\\\\s*\")"
+  },
+  {
+    "ID": "FSM_KEY_HIDDEN",
+    "Name": "[Firm MS-05] Key columns are hidden",
+    "Category": "Firm standards",
+    "Severity": 3,
+    "Scope": "Column",
+    "Expression": "Name.EndsWith(\"Key\") and not IsHidden",
+    "FixExpression": "IsHidden = true"
+  },
+  {
+    "ID": "FSM_SOURCE_PREFIX",
+    "Name": "[Firm naming] No source-system prefixes in object names",
+    "Category": "Firm standards",
+    "Severity": 3,
+    "Scope": "Table, Column, Measure",
+    "Expression": "RegEx.IsMatch(Name, \"^(dbo_|vw_|stg_|dim_|fact_|tbl_)\", RegexOptions.IgnoreCase)"
+  },
+  {
+    "ID": "FSM_BIDI",
+    "Name": "[Firm MS-04] Bi-directional relationship needs justification",
+    "Category": "Firm standards",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "CrossFilteringBehavior == CrossFilteringBehavior.BothDirections"
+  },
+  {
+    "ID": "FSM_CALC_COLUMN_ON_FACT",
+    "Name": "[Firm DX-23] No calculated columns on fact tables",
+    "Category": "Firm standards",
+    "Severity": 3,
+    "Scope": "CalculatedColumn",
+    "Expression": "Table.Annotations.ContainsKey(\"fsm_table_type\") and Table.GetAnnotation(\"fsm_table_type\") == \"fact\""
+  },
+  {
+    "ID": "FSM_DATE_TABLE",
+    "Name": "[Firm MS-02] Model has a table named Date marked as date table",
+    "Category": "Firm standards",
+    "Severity": 3,
+    "Scope": "Model",
+    "Expression": "not Tables.Any(t => t.Name == \"Date\" and t.DataCategory == \"Time\")"
+  }
+]

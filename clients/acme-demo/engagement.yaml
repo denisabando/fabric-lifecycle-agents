@@ -1,0 +1,19 @@
+client: acme-demo
+client_name: Acme Retail (demo)
+consultant: Denis
+fiscal_year_start_month: 7
+default_storage_mode: Import
+calc_groups_allowed: false            # see CO-01
+allow_data_reads: false
+tenant: acme-demo.example.com
+environments:
+  - name: dev
+    workspace: "Acme BI - Dev"
+  - name: test
+    workspace: "Acme BI - Test"
+  - name: prod
+    workspace: "Acme BI"
+    prod: true
+deployment:
+  method: git_integration
+  refresh_after_deploy: true

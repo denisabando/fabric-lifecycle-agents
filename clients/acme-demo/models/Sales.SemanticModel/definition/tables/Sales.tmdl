@@ -1,0 +1,50 @@
+/// Sales fact — one row per receipt line. No measures here (MS-03), no calculated columns (DX-23).
+table Sales
+	isHidden
+
+	annotation fsm_table_type = fact
+
+	column DateKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column ReceiptId
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: ReceiptId
+
+	column NetAmount
+		dataType: decimal
+		isHidden
+		summarizeBy: none
+		sourceColumn: NetAmount
+
+	column Quantity
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Quantity
+
+	partition Sales = m
+		mode: import
+		source =
+			let
+				Source = Lakehouse.Contents(null){[workspaceId = "<dev-workspace-id>"]}[Data]{[lakehouseId = "<lakehouse-id>"]}[Data],
+				T = Source{[Id = "fact_sales_line", ItemKind = "Table"]}[Data]
+			in
+				T

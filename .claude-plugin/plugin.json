@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "fabric-semantic-model-agent",
+  "description": "Consulting agent for building Power BI / Fabric semantic models on client engagements. Layers firm standards and per-client overrides on top of Microsoft's semantic-model-authoring skill.",
+  "version": "0.1.0",
+  "license": "Proprietary",
+  "keywords": ["fabric", "powerbi", "semantic-model", "tmdl", "dax", "consulting"],
+  "skills": [
+    "./skills/fsm-semantic-model",
+    "./skills/fsm-modeling-standards",
+    "./skills/fsm-dax-standards",
+    "./skills/fsm-engagement-workflow",
+    "./skills/fsm-review",
+    "./skills/fsm-deployment",
+    "./vendor/skills-for-fabric/plugins/powerbi-authoring/skills/semantic-model-authoring"
+  ],
+  "agents": ["./agents/modeler.md", "./agents/reviewer.md", "./agents/deployer.md"],
+  "commands": ["./commands/new-engagement.md", "./commands/review-model.md", "./commands/sync-upstream.md"],
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": {
+    "powerbi-modeling-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@microsoft/powerbi-modeling-mcp@latest", "--start"]
+    }
+  }
+}

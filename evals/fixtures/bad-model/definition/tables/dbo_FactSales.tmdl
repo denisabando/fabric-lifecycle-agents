@@ -1,0 +1,19 @@
+table dbo_FactSales
+
+	annotation fsm_table_type = fact
+
+	column StoreKey
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+	column src_Amount
+		dataType: decimal
+		summarizeBy: sum
+		sourceColumn: Amount
+
+	measure 'Avg Amount' = SUM ( 'dbo_FactSales'[src_Amount] ) / COUNTROWS ( 'dbo_FactSales' )
+
+	partition dbo_FactSales = m
+		mode: import
+		source = #table({"StoreKey","Amount"}, {})

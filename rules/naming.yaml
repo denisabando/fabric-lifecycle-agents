@@ -1,0 +1,23 @@
+# Naming conventions — consumed by skills (prose) and scripts/lint-tmdl.py (enforcement)
+version: 1
+tables:
+  case: title            # Title Case
+  singular: true
+  forbidden_prefixes: [dbo_, vw_, stg_, dim_, fact_, tbl_]
+  measures_table: _Measures
+  date_table: Date
+columns:
+  case: title
+  forbidden_prefixes: [dbo_, src_, col_]
+  key_suffix: Key
+  keys_hidden: true
+measures:
+  case: title
+  require_description: true
+  require_format_string: true
+  units_in_name_when_ambiguous: true
+roles:
+  prefix: "RLS - "
+technical_columns:
+  prefix: "_"
+  hidden: true

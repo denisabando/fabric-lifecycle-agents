@@ -1,0 +1,36 @@
+/// Product dimension (SCD2 in source; current-row flag hidden).
+table Product
+
+	annotation fsm_table_type = dimension
+
+	column ProductKey
+		dataType: int64
+		isKey
+		isHidden
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	column Product
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ProductName
+
+	column Category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Category
+
+	column _IsCurrent
+		dataType: boolean
+		isHidden
+		summarizeBy: none
+		sourceColumn: IsCurrent
+
+	partition Product = m
+		mode: import
+		source =
+			let
+				Source = Lakehouse.Contents(null){[workspaceId = "<dev-workspace-id>"]}[Data]{[lakehouseId = "<lakehouse-id>"]}[Data],
+				T = Source{[Id = "dim_product", ItemKind = "Table"]}[Data]
+			in
+				T

@@ -1,0 +1,30 @@
+/// Store dimension. Region drives RLS.
+table Store
+
+	annotation fsm_table_type = dimension
+
+	column StoreKey
+		dataType: int64
+		isKey
+		isHidden
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+	column Store
+		dataType: string
+		summarizeBy: none
+		sourceColumn: StoreName
+
+	column Region
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Region
+
+	partition Store = m
+		mode: import
+		source =
+			let
+				Source = Lakehouse.Contents(null){[workspaceId = "<dev-workspace-id>"]}[Data]{[lakehouseId = "<lakehouse-id>"]}[Data],
+				T = Source{[Id = "dim_store", ItemKind = "Table"]}[Data]
+			in
+				T

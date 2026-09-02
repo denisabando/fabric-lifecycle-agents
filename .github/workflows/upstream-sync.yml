@@ -1,0 +1,43 @@
+name: Upstream sync (microsoft/skills-for-fabric)
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Compare pinned SHA with upstream main
+        id: cmp
+        run: |
+          BUMP=true scripts/sync-upstream.sh | tee sync-report.md
+          grep -q 'UP_TO_DATE=false' sync-report.md && echo "changed=true" >> "$GITHUB_OUTPUT" || echo "changed=false" >> "$GITHUB_OUTPUT"
+          echo "new=$(git -C vendor/skills-for-fabric rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Snapshot rule-like guidance for reviewers
+        if: steps.cmp.outputs.changed == 'true'
+        run: |
+          grep -rhoE '^\s*[-*] .*(must|never|always|should|do not|avoid)[^.]*\.' \
+            vendor/skills-for-fabric/plugins/powerbi-authoring/skills/semantic-model-authoring \
+            | sort -u > rules/upstream-rules.snapshot.md || true
+
+      - name: Open PR
+        if: steps.cmp.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/upstream-sync-${{ steps.cmp.outputs.new }}
+          title: "Upstream: skills-for-fabric → ${{ steps.cmp.outputs.new }}"
+          commit-message: "chore: bump vendor/skills-for-fabric to ${{ steps.cmp.outputs.new }}"
+          labels: upstream-sync
+          body-path: sync-report.md

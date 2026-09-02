@@ -1,0 +1,19 @@
+client: <code>
+client_name: <Client Name>
+consultant: <name>
+fiscal_year_start_month: 1
+default_storage_mode: Import          # Import | DirectQuery | DirectLake
+calc_groups_allowed: true             # false if the client cannot maintain them
+allow_data_reads: false               # agent may only query metadata (INFO.*) unless true
+tenant: <tenant domain>
+environments:
+  - name: dev
+    workspace: "<Client> BI - Dev"
+  - name: test
+    workspace: "<Client> BI - Test"
+  - name: prod
+    workspace: "<Client> BI"
+    prod: true
+deployment:
+  method: git_integration             # git_integration | deployment_pipeline | rest_updateDefinition
+  refresh_after_deploy: true

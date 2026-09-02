@@ -1,0 +1,4 @@
+role 'RLS - Region'
+	modelPermission: read
+
+	tablePermission Store = 'Store'[Region] IN CALCULATETABLE ( VALUES ( 'Security User Region'[Region] ), 'Security User Region'[UserPrincipalName] = USERPRINCIPALNAME () )

@@ -1,0 +1,48 @@
+/// All measures live here (MS-03). Time intelligence is hand-written per client override CO-01.
+table _Measures
+
+	annotation fsm_table_type = measures
+
+	/// Sales net of GST and returns, in AUD.
+	measure 'Net Sales (AUD)' = SUM ( 'Sales'[NetAmount] )
+		formatString: #,0
+		displayFolder: Sales
+
+	/// Number of distinct receipts (baskets).
+	measure 'Baskets #' = DISTINCTCOUNT ( 'Sales'[ReceiptId] )
+		formatString: #,0
+		displayFolder: Sales
+
+	/// Net sales per basket, in AUD.
+	measure 'Avg Basket (AUD)' =
+			DIVIDE ( [Net Sales (AUD)], [Baskets #] )
+		formatString: #,0.00
+		displayFolder: Sales
+
+	/// Net sales for the same period in the prior fiscal year, in AUD.
+	measure 'Net Sales PY (AUD)' =
+			CALCULATE (
+			    [Net Sales (AUD)],
+			    SAMEPERIODLASTYEAR ( 'Date'[Date] )
+			)
+		formatString: #,0
+		displayFolder: Sales\Time
+
+	/// Year-over-year growth in net sales.
+	measure 'Net Sales YoY %' =
+			VAR _Current = [Net Sales (AUD)]
+			VAR _Prior = [Net Sales PY (AUD)]
+			RETURN
+			    DIVIDE ( _Current - _Prior, _Prior )
+		formatString: 0.0%
+		displayFolder: Sales\Time
+
+	column Value
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: Value
+
+	partition _Measures = m
+		mode: import
+		source = #table({"Value"}, {})

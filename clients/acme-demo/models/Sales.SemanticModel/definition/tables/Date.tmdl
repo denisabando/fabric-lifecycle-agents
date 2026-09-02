@@ -1,0 +1,45 @@
+/// Conformed date table. Fiscal year starts 1 July (CO-02).
+table Date
+	dataCategory: Time
+
+	annotation fsm_table_type = dimension
+
+	column DateKey
+		dataType: int64
+		isKey
+		isHidden
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: Date
+		isDefaultLabel
+
+	column 'Fiscal Year'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: FiscalYear
+		displayFolder: Fiscal
+
+	column 'Fiscal Month'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: FiscalMonth
+		displayFolder: Fiscal
+
+	partition Date = m
+		mode: import
+		source =
+			let
+				Start = #date(2023, 7, 1),
+				Days = List.Dates(Start, 365 * 4, #duration(1, 0, 0, 0)),
+				T = Table.FromList(Days, Splitter.SplitByNothing(), {"Date"}),
+				Typed = Table.TransformColumnTypes(T, {{"Date", type date}}),
+				Key = Table.AddColumn(Typed, "DateKey", each Date.Year([Date]) * 10000 + Date.Month([Date]) * 100 + Date.Day([Date]), Int64.Type),
+				FY = Table.AddColumn(Key, "FiscalYear", each "FY" & Text.From(if Date.Month([Date]) >= 7 then Date.Year([Date]) + 1 else Date.Year([Date]))),
+				FM = Table.AddColumn(FY, "FiscalMonth", each Date.ToText([Date], "MMM"))
+			in
+				FM

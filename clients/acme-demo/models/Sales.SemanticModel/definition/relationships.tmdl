@@ -1,0 +1,11 @@
+relationship 5a1e0d1c-0001-4c2a-9a1e-000000000001
+	fromColumn: Sales.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 5a1e0d1c-0002-4c2a-9a1e-000000000002
+	fromColumn: Sales.ProductKey
+	toColumn: Product.ProductKey
+
+relationship 5a1e0d1c-0003-4c2a-9a1e-000000000003
+	fromColumn: Sales.DateKey
+	toColumn: Date.DateKey

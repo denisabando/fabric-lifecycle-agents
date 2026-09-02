@@ -1,0 +1,20 @@
+# real client engagements never live in the shared repo
+clients/*
+!clients/_template/
+!clients/acme-demo/
+!clients/README.md
+
+# local secrets / auth
+.env
+*.pfx
+**/engagement.local.yaml
+
+# Power BI / PBIP noise
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+**/*.pbix
+
+# tooling
+node_modules/
+.DS_Store
+evals/out/
