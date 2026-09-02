@@ -22,6 +22,10 @@ Microsoft's skill says **how** (tool routing, TMDL syntax, MCP calls, deployment
 Firm skills say **what good looks like** (naming, structure, DAX style, review gates).
 Client overrides adjust both for one engagement. See `rules/precedence.md`.
 
+**Rule zero (MS-00): TMDL/PBIP is the only authoring path — no live edits.** The model of record
+is the TMDL in the client's git repo; every change is a diff. Microsoft's skill prefers live
+authoring through the Modeling MCP (its Tier 1); this repo overrides that and uses MCP read-only.
+
 ## Layout
 
 | Path | Owner | Purpose |

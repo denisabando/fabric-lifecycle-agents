@@ -7,6 +7,24 @@ description: "Firm modelling standards for Power BI / Fabric semantic models: st
 
 Rule ids are referenced by the reviewer and by `rules/bpa-rules.json`. Cite them in your output.
 
+## Rule zero — the diffable path
+
+- **MS-00 TMDL/PBIP is the only authoring path. No live edits.** The model of record is the
+  PBIP project's `<Model>.SemanticModel/definition/*.tmdl` files in the client's git repo. Every
+  change to a model is a file edit followed by a commit. Concretely:
+  - **Never** author against a live model: not a running Power BI Desktop instance, not a
+    semantic model in a Fabric workspace, not through the service UI or web modelling.
+  - **Never** use the Power BI Modeling MCP for write operations (create / update / delete /
+    rename / apply). MCP may be used **read-only** — connected to the local PBIP folder — for
+    inspection, DAX validation and best-practice analysis.
+  - Changes reach a workspace only from committed TMDL: workspace git integration (branch sync)
+    or `updateDefinition` from the committed definition folder. Never edit in the service.
+  - If a model exists only as a `.pbix` or only in a workspace, the first step is to export it
+    to PBIP (Microsoft's *Export to PBIP* workflow), commit that baseline, and work from there.
+  - This **overrides Microsoft's Tool Selection Priority Tier 1** (MCP live authoring). Logged in
+    `rules/precedence.md`. Reason: on an engagement every change must be reviewable as a diff,
+    reproducible from git, and attributable — a live edit is none of those.
+
 ## Structure
 
 - **MS-01 Star schema, always.** One fact grain per fact table. Snowflakes only where a client

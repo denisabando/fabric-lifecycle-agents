@@ -6,6 +6,13 @@ INPUT="$(cat)"
 TOOL="$(printf '%s' "$INPUT" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("tool_name",""))')"
 ARGS="$(printf '%s' "$INPUT" | python3 -c 'import sys,json; print(json.dumps(json.load(sys.stdin).get("tool_input",{})))')"
 
+# 0. MS-00 — no live edits: Modeling MCP is read-only; writes go to TMDL files
+if printf '%s' "$TOOL" | grep -Eq '^mcp__powerbi-modeling-mcp__' && \
+   ! printf '%s' "$TOOL" | grep -Eiq '(list|get|read|query|validate|analy|export|serialize|describe|connect|status|info)'; then
+  echo "BLOCKED (MS-00): '$TOOL' would write to a live model. Edit the TMDL files in the PBIP definition folder and commit instead; MCP is read-only on engagements." >&2
+  exit 2
+fi
+
 # 1. vendor/ is read-only
 if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*vendor/'; then
   echo "BLOCKED: vendor/ is Microsoft's skill, pinned and read-only. Put firm changes in skills/fsm-* and log overrides in rules/precedence.md." >&2

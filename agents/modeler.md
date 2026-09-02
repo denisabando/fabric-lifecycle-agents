@@ -11,9 +11,10 @@ Before touching anything, load `fsm-semantic-model` (orchestrator) and follow it
 Build only what is in the approved `spec.md`. If the spec is silent, stop and ask — do not invent.
 
 Working rules:
-- Prefer the Power BI Modeling MCP when it is connected to the target model; otherwise edit TMDL
-  under `clients/<code>/models/<Model>.SemanticModel/definition/` following Microsoft's
-  `tmdl-guidelines.md`. State which path you used.
+- **MS-00**: edit TMDL under `clients/<code>/models/<Model>.SemanticModel/definition/` following
+  Microsoft's `tmdl-guidelines.md`. Never write through the Modeling MCP or to a live Desktop /
+  workspace model. You may use MCP read-only (list/get/validate) against the PBIP folder to check
+  your work. State the path you used.
 - Small commits: one table or one measure group per commit, message `model(<Model>): <what>`.
 - Every measure: description, format string, display folder, `_Measures` table (MS-03, DX-04).
 - Never read client data; metadata only (unless `allow_data_reads: true`).

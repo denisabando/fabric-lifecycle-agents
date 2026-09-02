@@ -33,8 +33,10 @@ client override  >  firm rules (fsm-*)  >  Microsoft skill  >  your own judgemen
 | Firm | `fsm-modeling-standards`, `fsm-dax-standards` (+ `rules/naming.yaml`, `rules/bpa-rules.json`) | naming, structure, DAX style, review gates |
 | Microsoft | `vendor/skills-for-fabric/plugins/powerbi-authoring/skills/semantic-model-authoring/SKILL.md` | tool routing (Modeling MCP → TMDL → REST), TMDL syntax, Direct Lake mechanics, deployment, refresh, permissions |
 
-Follow the Microsoft skill's **Tool selection priority** and its workflow selector exactly for
-*how* to perform an operation. Apply firm and client rules to decide *what* to create.
+Follow the Microsoft skill's workflow selector for *how* to perform an operation, **with one
+standing override**: firm rule **MS-00** replaces Microsoft's Tool Selection Priority. Tier 1
+(MCP live authoring) is disabled for writes; always take the TMDL/PBIP path (Microsoft's Tier 2)
+and use the Modeling MCP read-only for inspection and validation against the PBIP folder. Apply firm and client rules to decide *what* to create.
 
 When a firm or client rule contradicts Microsoft guidance, the higher layer wins. Append the
 conflict to `rules/precedence.md` (date, rule, which MS guidance it overrides, why) so it is
@@ -50,14 +52,14 @@ reviewed on the next upstream sync. **Never edit anything under `vendor/`.**
 
 ## 4. Always-on rules (short list; details in the firm skills)
 
-- Source of truth is the PBIP project's TMDL under `clients/<code>/models/`. Every change is a
-  git diff.
+- **MS-00**: source of truth is the PBIP project's TMDL under `clients/<code>/models/`. Every
+  change is a file edit + commit. No live edits to Desktop, workspace or via MCP writes.
 - Every measure has a `description`. The handover pack is generated from it.
 - Never read client **data** (only metadata) unless `engagement.yaml: allow_data_reads: true`.
 - Never place credentials, connection strings or workspace IDs anywhere except
   `engagement.yaml` / environment variables.
-- Prefer the Modeling MCP when Power BI Desktop is open on the model; otherwise edit TMDL directly
-  and say so.
+- The Modeling MCP is read-only on engagements (inspect, validate DAX, analyse). If a user asks
+  for a live edit, explain MS-00 and offer the TMDL edit instead.
 
 ## 5. Output contract
 
