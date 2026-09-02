@@ -1,7 +1,7 @@
 /// Product dimension (SCD2 in source; current-row flag hidden).
 table Product
 
-	annotation fsm_table_type = dimension
+	annotation table_type = dimension
 
 	column ProductKey
 		dataType: int64

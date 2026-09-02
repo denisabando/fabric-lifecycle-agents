@@ -12,11 +12,11 @@ storage_mode_rationale: 40M rows fits Import comfortably; daily refresh is suffi
 
 ## Tables
 | Table | Type | Grain | Source object | Notes |
-| Sales | fact | receipt line | sales.fact_sales_line | MS-01 |
+| Sales | fact | receipt line | sales.fact_sales_line | MOD-01 |
 | Store | dim | store | sales.dim_store | region attribute for RLS |
 | Product | dim | product (SCD2) | sales.dim_product | |
 | Date | dim | day | generated | FY Jul–Jun (CO-02) |
-| _Measures | measures | — | — | MS-03 |
+| _Measures | measures | — | — | MOD-03 |
 
 ## Relationships
 | From (many) | To (one) | Direction |

@@ -13,8 +13,8 @@ storage_mode_rationale:
 ## Tables
 | Table | Type | Grain | Source object | Notes |
 | ----- | ---- | ----- | ------------- | ----- |
-| Date | dim | day | generated | MS-02 |
-| _Measures | measures | — | — | MS-03 |
+| Date | dim | day | generated | MOD-02 |
+| _Measures | measures | — | — | MOD-03 |
 
 ## Relationships
 | From (many) | To (one) | Direction | Justification if bi-directional |

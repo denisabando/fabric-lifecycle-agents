@@ -16,4 +16,4 @@ then `Region` → `Sales`. Role `RLS - Dynamic Region`:
 
 ## Pattern C — Direct Lake
 Same as B, but the security table must exist in the Lakehouse; RLS with Direct Lake falls back to
-DirectQuery for the filtered tables — say so in `spec.md` and test it (MS-22).
+DirectQuery for the filtered tables — say so in `spec.md` and test it (MOD-22).

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0] - 2026-09-02
+### Changed — genericised for more domains
+- Dropped the `fsm-` prefix everywhere; plugin renamed `fabric-lifecycle-agents`.
+- One `skills/standards/` folder holds every firm rule (`modeling.md`, `dax.md`, `report.md`) and
+  **`overrides.md`** — the single list of departures from Microsoft (replaces `rules/precedence.md`).
+  Domain orchestrators (`skills/semantic-model`, `skills/report`) contain routing only.
+- Rule ids are domain-prefixed and no longer look like Microsoft's: `MS-*` → `MOD-*`, `DX-*` → `DAX-*`,
+  `RP-*` → `RPT-*`. TMDL/PBIR annotations and BPA rule ids lose the `fsm_` prefix.
+
 ## [0.3.0] - 2026-09-02
 ### Changed — simplification pass
 - **Model contract file removed.** The handoff to the report domain is now the `model_commit`
@@ -13,19 +22,19 @@
 
 ## [0.2.0] - 2026-09-02
 ### Added
-- Report-authoring domain: `fsm-report-authoring` entry skill (RP-00..RP-08), `report-reviewer`
+- Report-authoring domain: `report` entry skill (RPT-00..RPT-08), `report-reviewer`
   subagent, `/build-report`, firm theme, review checklist; vendored Microsoft `powerbi-report-*`
   skills registered in the plugin manifest.
 - Model contract handoff: `scripts/gen-model-contract.py` (TMDL → YAML at end of model review) and
-  `scripts/check-report-contract.py` (boundary test, RP-01/RP-02); `contracts/` folder per client.
+  `scripts/check-report-contract.py` (boundary test, RPT-01/RPT-02); `contracts/` folder per client.
 - Demo `Sales Performance.Report` (PBIR) bound to the `acme-demo` Sales contract, a bad-report
   fixture, evals 007–009 (build from contract, contract violation, contract drift).
-- Hooks: RP-00 (.pbix never written), report JSON edits trigger the contract check + PBIR validate.
+- Hooks: RPT-00 (.pbix never written), report JSON edits trigger the contract check + PBIR validate.
 
 ## [0.1.0] - 2026-09-02
 ### Added
-- **MS-00** rule zero: TMDL/PBIP is the only authoring path, no live edits; Modeling MCP is read-only.
-  Overrides Microsoft's Tier 1 (logged in `rules/precedence.md`); enforced by `hooks/pre-tool-use.sh`.
+- **MOD-00** rule zero: TMDL/PBIP is the only authoring path, no live edits; Modeling MCP is read-only.
+  Overrides Microsoft's Tier 1 (logged in `skills/standards/overrides.md`); enforced by `hooks/pre-tool-use.sh`.
 - Initial sample repo: orchestrator skill, firm standards, engagement workflow, review/deploy skills,
   subagents, hooks, commands, rules, evals scaffold, upstream sync workflow.
 - Vendored `microsoft/skills-for-fabric` as a pinned submodule.

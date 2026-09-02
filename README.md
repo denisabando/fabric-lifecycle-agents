@@ -1,23 +1,24 @@
-# Fabric Semantic Model Agent
+# Fabric Lifecycle Agents
 
-A packaged, versioned agent that consultants install on a client BI engagement to design, build,
-review and deploy Power BI / Microsoft Fabric semantic models.
+Packaged, versioned agents that consultants install on a client engagement to design, build, review
+and deploy Microsoft Fabric work — semantic models and Power BI reports today, with the structure
+ready for further domains (ingestion, etc.).
 
-It stands on Microsoft's own `semantic-model-authoring` skill (vendored from
+Each domain stands on Microsoft's own skills (vendored from
 [microsoft/skills-for-fabric](https://github.com/microsoft/skills-for-fabric), pinned to a commit)
-and adds a firm-owned layer of modelling standards, an engagement workflow, review gates and
-per-client overrides — **without ever editing Microsoft's files**.
+and adds a firm-owned layer of standards, an engagement workflow, review gates and per-client
+overrides — **without ever editing Microsoft's files**.
 
 > **Design principle: layer, don't fork.**
-> `vendor/` is read-only. Everything the firm owns lives beside it under `skills/fsm-*`, `rules/`,
+> `vendor/` is read-only. Everything the firm owns lives beside it under `skills/standards`, `rules/`,
 > `agents/`, `hooks/` and `commands/`, and the orchestrator skill says how the layers combine.
 
 ## Two domains, one handoff
 
 | Domain | Entry skill | Microsoft base | Firm rules | Produces |
 | --- | --- | --- | --- | --- |
-| Semantic model | `fsm-semantic-model` | `semantic-model-authoring` | `MS-*`, `DX-*` | PBIP/TMDL model + a passing review that pins `model_commit` |
-| Report | `fsm-report-authoring` | `powerbi-report-planning/-design/-authoring/-management` | `RP-*` | PBIR report bound to visible objects at that commit |
+| Semantic model | `semantic-model` | `semantic-model-authoring` | `MOD-*`, `DAX-*` | PBIP/TMDL model + a passing review that pins `model_commit` |
+| Report | `report` | `powerbi-report-planning/-design/-authoring/-management` | `RPT-*` | PBIR report bound to visible objects at that commit |
 
 The handoff is a **git commit, not a document**. When the model reviewer passes a model it records
 `model_commit` in the review report; the report domain reads the model's TMDL at that sha (using
@@ -31,14 +32,18 @@ domain (e.g. ingestion) exists.
 ## Precedence
 
 ```
-client override  >  firm rules (fsm-*)  >  Microsoft skill  >  model's own judgement
+client override  >  firm standards  >  Microsoft skill  >  model's own judgement
 ```
 
 Microsoft's skill says **how** (tool routing, TMDL syntax, MCP calls, deployment mechanics).
 Firm skills say **what good looks like** (naming, structure, DAX style, review gates).
-Client overrides adjust both for one engagement. See `rules/precedence.md`.
+Client overrides adjust both for one engagement.
 
-**Rule zero (MS-00): TMDL/PBIP is the only authoring path — no live edits.** The model of record
+Three layers, three places, and "overrides" means the same thing at each: Microsoft's skills in
+`vendor/`; the firm's standards in `skills/standards/` with every departure from Microsoft listed in
+`skills/standards/overrides.md`; the client's exceptions in `clients/<code>/overrides.md`.
+
+**Rule zero (MOD-00): TMDL/PBIP is the only authoring path — no live edits.** The model of record
 is the TMDL in the client's git repo; every change is a diff. Microsoft's skill prefers live
 authoring through the Modeling MCP (its Tier 1); this repo overrides that and uses MCP read-only.
 
@@ -47,13 +52,11 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | Path | Owner | Purpose |
 | --- | --- | --- |
 | `vendor/skills-for-fabric/` | Microsoft | Git submodule, pinned SHA, **never edited** |
-| `skills/fsm-semantic-model/` | Firm | **Entry point.** The only skill consultants invoke |
-| `skills/fsm-modeling-standards/` | Firm | Star-schema rules, naming, folders, RLS, Direct Lake guardrails |
-| `skills/fsm-dax-standards/` | Firm | DAX style, variables, anti-patterns, perf checklist |
-| `skills/fsm-engagement-workflow/` | Firm | Discovery → spec → build → review → deploy → handover, with templates |
-| `skills/fsm-report-authoring/` | Firm | **Report entry point.** RP-* rules, firm theme, review checklist |
-| `scripts/check-report-bindings.py` | Firm | Boundary test: report fields vs the model at the reviewed commit |
-| `rules/` | Firm | Machine-readable rules used by skills **and** CI (BPA, naming, precedence log) |
+| `skills/semantic-model/` | Firm | **Model domain entry point** (orchestrator only — no rules of its own) |
+| `skills/report/` | Firm | **Report domain entry point** (orchestrator only) |
+| `skills/standards/` | Firm | **All firm rules in one place**: `modeling.md` (MOD-*), `dax.md` (DAX-*), `report.md` (RPT-*), and `overrides.md` — the single list of departures from Microsoft |
+| `skills/engagement-workflow/` | Firm | Phases, gates and templates shared by every domain |
+| `rules/` | Firm | Machine-checkable subset of the standards (naming.yaml, bpa-rules.json) used by hooks and CI |
 | `agents/` | Firm | `modeler`, `reviewer` + `report-reviewer` (read-only; review steps live here), `deployer` (gates + mechanisms live here) |
 | `hooks/` | Firm | Enforcement: protect `vendor/`, lint TMDL on edit, gate prod deploys |
 | `commands/` | Firm | `/new-engagement`, `/review-model`, `/build-report`, `/sync-upstream` |
@@ -65,13 +68,13 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 
 ```bash
 git clone --recurse-submodules <this-repo>
-cd fabric-semantic-model-agent
+cd fabric-lifecycle-agents
 # in Claude Code:
 /plugin marketplace add ./
-/plugin install fabric-semantic-model-agent@fsm-marketplace
+/plugin install fabric-lifecycle-agents@fabric-agents
 ```
 
-The plugin manifest registers the Power BI Modeling MCP server (read-only on engagements, MS-00). You also need Power BI
+The plugin manifest registers the Power BI Modeling MCP server (read-only on engagements, MOD-00). You also need Power BI
 Desktop with PBIP/TMDL enabled, Azure CLI (`az login`) for Fabric REST calls, and Tabular Editor 2
 CLI on PATH for BPA runs.
 
@@ -82,7 +85,7 @@ CLI, so consultants forced onto Copilot at a client can use the same repo.
 
 ```text
 /new-engagement acme            # scaffolds clients/acme/ from clients/_template/
-/fsm-semantic-model build the Sales model from clients/acme/spec.md
+/semantic-model build the Sales model from clients/acme/spec.md
 /review-model clients/acme/models/Sales.SemanticModel   # on pass → review report records model_commit
 /build-report acme "Sales Performance"                    # pins to that commit
 ```
@@ -110,3 +113,11 @@ keeps the agent).
 
 Sample / demonstration repo. Microsoft's skill is in **preview** — expect breaking changes; the
 pinned SHA and the evals are the mitigation, not optional extras.
+
+## Adding a domain
+
+1. `skills/<domain>/SKILL.md` — an orchestrator only: context, layer order, subagents, output block.
+2. `skills/standards/<domain>.md` — its rules with a new id prefix; `-00` is "diffable path, no live edits".
+3. Rows in `skills/standards/overrides.md` for anything that contradicts the vendored Microsoft skill.
+4. Register the Microsoft skills it uses in `.claude-plugin/plugin.json` (they are already in `vendor/`).
+5. A reviewer subagent, a hook rule if something must be enforced, fixtures + evals.

@@ -1,7 +1,7 @@
 /// Store dimension. Region drives RLS.
 table Store
 
-	annotation fsm_table_type = dimension
+	annotation table_type = dimension
 
 	column StoreKey
 		dataType: int64

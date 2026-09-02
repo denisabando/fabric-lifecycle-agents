@@ -18,13 +18,13 @@ result: pass | fail
 
 Findings: (rule id · object · note)
 
-## Firm checklist (fsm-review)
-- [ ] MS-01 star schema
-- [ ] MS-02 date table
-- [ ] MS-03 measures table
+## Firm checklist (standards/modeling.md, standards/dax.md)
+- [ ] MOD-01 star schema
+- [ ] MOD-02 date table
+- [ ] MOD-03 measures table
 - [ ] ...
 
-## DAX performance checklist (fsm-dax-standards)
+## DAX performance checklist (standards/dax.md)
 | Measure | Total ms | SE % | FE % | Note |
 
 ## Client override compliance

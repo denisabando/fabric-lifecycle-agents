@@ -31,22 +31,22 @@ def main(path, rules_path):
         findings.append(f"{path}: table '{table}' has a forbidden source prefix (rules/naming.yaml tables.forbidden_prefixes)")
     if table and table != rules["tables"]["measures_table"]:
         for m in re.finditer(r"^\s+measure\s+(?:'([^']+)'|([^=\s]+))\s*=", txt, re.M):
-            findings.append(f"{path}: measure '{m.group(1) or m.group(2)}' defined on '{table}' — MS-03: measures belong in {rules['tables']['measures_table']}")
+            findings.append(f"{path}: measure '{m.group(1) or m.group(2)}' defined on '{table}' — MOD-03: measures belong in {rules['tables']['measures_table']}")
     described = {(m.group(1) or m.group(2)) for m in re.finditer(r"///[^\n]*\n\s+measure\s+(?:'([^']+)'|([^=\s]+))\s*=", txt)}
     for m in re.finditer(r"^\s+measure\s+(?:'([^']+)'|([^=\s]+))\s*=.*?(?=^\s+(?:measure|column|partition|hierarchy|///)\b|^\s+///|\Z)", txt, re.M | re.S):
         name, body = (m.group(1) or m.group(2)), m.group(0)
         if rules["measures"].get("require_description") and "description:" not in body and name not in described:
-            findings.append(f"{path}: measure '{name}' has no description (DX-04)")
+            findings.append(f"{path}: measure '{name}' has no description (DAX-04)")
         if rules["measures"].get("require_format_string") and "formatString" not in body:
-            findings.append(f"{path}: measure '{name}' has no formatString (DX-04)")
+            findings.append(f"{path}: measure '{name}' has no formatString (DAX-04)")
     for c in re.finditer(r"^\s+column\s+(?:'([^']+)'|(\S+)).*?(?=^\s+(?:measure|column|partition|hierarchy)\b|\Z)", txt, re.M | re.S):
         name, body = (c.group(1) or c.group(2)), c.group(0)
         if name.endswith(rules["columns"]["key_suffix"]) and rules["columns"].get("keys_hidden") and "isHidden" not in body:
-            findings.append(f"{path}: key column '{name}' is not hidden (MS-05)")
+            findings.append(f"{path}: key column '{name}' is not hidden (MOD-05)")
         if any(name.lower().startswith(p.lower()) for p in rules["columns"].get("forbidden_prefixes", [])):
             findings.append(f"{path}: column '{name}' has a forbidden source prefix")
-    for f in findings: print("[fsm-lint] " + f)
-    if not findings: print(f"[fsm-lint] {path}: clean")
+    for f in findings: print("[lint] " + f)
+    if not findings: print(f"[lint] {path}: clean")
     return 1 if findings else 0
 
 if __name__ == "__main__":

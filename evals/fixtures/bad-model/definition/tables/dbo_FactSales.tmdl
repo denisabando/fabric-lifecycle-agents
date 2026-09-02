@@ -1,6 +1,6 @@
 table dbo_FactSales
 
-	annotation fsm_table_type = fact
+	annotation table_type = fact
 
 	column StoreKey
 		dataType: int64

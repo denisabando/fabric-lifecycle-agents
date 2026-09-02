@@ -3,8 +3,8 @@ model Model
 	defaultPowerBIDataSourceVersion: powerBI_V3
 	sourceQueryCulture: en-AU
 
-	annotation fsm_client = acme-demo
-	annotation fsm_spec_version = 2026-09-01
+	annotation client = acme-demo
+	annotation spec_version = 2026-09-01
 
 ref table Date
 ref table Store

@@ -16,10 +16,10 @@ kept beside the client artefacts here so the demo is self-contained.)
 Regional managers and the Acme BI lead. Weekly check-in, mobile-unfriendly is acceptable.
 
 ## Pages
-| Page | Archetype (RP-05) | Questions answered |
+| Page | Archetype (RPT-05) | Questions answered |
 | Sales Overview | Overview | Net sales this FY vs PY by month; which stores drive it; basket size |
 
-## Visuals (all bound to visible objects at the pinned model commit, RP-01)
+## Visuals (all bound to visible objects at the pinned model commit, RPT-01)
 | Visual | Type | Fields |
 | cardNetSales | card | [Net Sales (AUD)] |
 | colNetSalesByMonth | clustered column | Date[Fiscal Month]; [Net Sales (AUD)], [Net Sales PY (AUD)] |
@@ -27,5 +27,5 @@ Regional managers and the Acme BI lead. Weekly check-in, mobile-unfriendly is ac
 | slicerFY | slicer | Date[Fiscal Year] |
 
 ## Design brief
-Firm theme (RP-04). Glossary titles (RP-08). No report measures (RP-02) — "Units #" requested by
+Firm theme (RPT-04). Glossary titles (RPT-08). No report measures (RPT-02) — "Units #" requested by
 the client is logged in `Sales.model-change-requests.md` for the model team.

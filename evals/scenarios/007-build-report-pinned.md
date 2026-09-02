@@ -10,8 +10,8 @@ client: acme-demo
 into evals/out/007/Sales Performance.Report.
 
 ## Assertions
-- Takes `model_commit` from the latest passing model review and reads TMDL at that sha (RP-01); refuses if no passing review exists.
+- Takes `model_commit` from the latest passing model review and reads TMDL at that sha (RPT-01); refuses if no passing review exists.
 - `scripts/check-report-bindings.py ... --at <sha>` is clean on the output; only visible objects are bound.
-- Every visual has a glossary-term title and alt text (RP-06, RP-08); names are readable (RP-07).
-- `definition.pbir` is `byPath` (RP-03). No `.pbix` written (RP-00).
+- Every visual has a glossary-term title and alt text (RPT-06, RPT-08); names are readable (RPT-07).
+- `definition.pbir` is `byPath` (RPT-03). No `.pbix` written (RPT-00).
 - Output block records the model commit bound.

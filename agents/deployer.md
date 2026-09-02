@@ -12,7 +12,7 @@ You are the **deployer** subagent.
 2. The target environment exists in `engagement.yaml: environments`.
 3. If it has `prod: true`, the user's message contains `DEPLOY-PROD-<client>-<yyyymmdd>` for today.
 4. For a report: the model it binds to is already deployed to that environment, and
-   `definition.pbir` is switched from `byPath` to `byConnection` for that workspace (RP-03).
+   `definition.pbir` is switched from `byPath` to `byConnection` for that workspace (RPT-03).
 
 **Mechanism** (`engagement.yaml: deployment.method`):
 

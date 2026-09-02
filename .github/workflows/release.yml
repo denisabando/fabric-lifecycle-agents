@@ -21,11 +21,11 @@ jobs:
           [ "$TAG" = "$V" ] || { echo "::error::plugin.json version $V != tag $TAG"; exit 1; }
       - name: Package
         run: |
-          git archive --format=tar.gz -o fabric-semantic-model-agent-${GITHUB_REF_NAME}.tar.gz HEAD
+          git archive --format=tar.gz -o fabric-lifecycle-agents-${GITHUB_REF_NAME}.tar.gz HEAD
           (cd vendor/skills-for-fabric && git rev-parse HEAD) > VENDOR_SHA.txt
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            fabric-semantic-model-agent-*.tar.gz
+            fabric-lifecycle-agents-*.tar.gz
             VENDOR_SHA.txt
           body_path: CHANGELOG.md

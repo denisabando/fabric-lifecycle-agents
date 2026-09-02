@@ -1,7 +1,7 @@
-/// All measures live here (MS-03). Time intelligence is hand-written per client override CO-01.
+/// All measures live here (MOD-03). Time intelligence is hand-written per client override CO-01.
 table _Measures
 
-	annotation fsm_table_type = measures
+	annotation table_type = measures
 
 	/// Sales net of GST and returns, in AUD.
 	measure 'Net Sales (AUD)' = SUM ( 'Sales'[NetAmount] )

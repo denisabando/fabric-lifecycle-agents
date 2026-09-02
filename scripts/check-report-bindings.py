@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""RP-01 boundary test: every Column/Measure reference in a PBIR report must resolve to a VISIBLE
+"""RPT-01 boundary test: every Column/Measure reference in a PBIR report must resolve to a VISIBLE
 object in the semantic model's TMDL — at the reviewed commit when one is given.
 
 Usage: check-report-bindings.py <Report>.Report <Model>.SemanticModel [--at <git-sha>]
@@ -39,7 +39,7 @@ def walk(o, where):
             if key in o and isinstance(o[key], dict) and "Property" in o[key]:
                 ent = o[key].get("Expression", {}).get("SourceRef", {}).get("Entity", "?"); prop = o[key]["Property"]; refs += 1
                 if (ent, prop) not in allowed:
-                    findings.append(f"{where}: {key.lower()} '{ent}'[{prop}] is not a visible object in the model{' at ' + at[:7] if at else ''} (RP-01)")
+                    findings.append(f"{where}: {key.lower()} '{ent}'[{prop}] is not a visible object in the model{' at ' + at[:7] if at else ''} (RPT-01)")
         for v in o.values(): walk(v, where)
     elif isinstance(o, list):
         for v in o: walk(v, where)
@@ -50,7 +50,7 @@ for f in sorted(rep.rglob("*.json")):
     except Exception as e: findings.append(f"{f}: invalid JSON ({e})"); continue
     walk(data, str(f.relative_to(rep)))
     if f.name == "visual.json" and ("measures" in data.get("visual", {}) or "reportMeasures" in data):
-        findings.append(f"{f.relative_to(rep)}: report-level measure defined (RP-02)")
+        findings.append(f"{f.relative_to(rep)}: report-level measure defined (RPT-02)")
 for x in findings: print("[bindings] " + x)
 print(f"[bindings] {rep.name} vs {model.name}{' @ ' + at[:7] if at else ' (working tree)'}: {refs} references, {len(findings)} findings")
 sys.exit(1 if findings else 0)

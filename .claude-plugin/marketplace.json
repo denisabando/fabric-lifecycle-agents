@@ -1,8 +1,8 @@
 {
-  "name": "fsm-marketplace",
+  "name": "fabric-agents",
   "metadata": {
-    "description": "Firm marketplace for the Fabric Semantic Model Agent",
-    "version": "0.3.0"
+    "description": "Firm marketplace for Fabric lifecycle agents",
+    "version": "0.4.0"
   },
   "owner": {
     "name": "BI Practice",
@@ -10,10 +10,10 @@
   },
   "plugins": [
     {
-      "name": "fabric-semantic-model-agent",
+      "name": "fabric-lifecycle-agents",
       "source": "./",
-      "description": "Semantic model + report authoring agent for client BI engagements (Microsoft base + firm standards)",
-      "version": "0.3.0"
+      "description": "Semantic model + report agents for client Fabric engagements (Microsoft base + firm standards)",
+      "version": "0.4.0"
     }
   ]
 }

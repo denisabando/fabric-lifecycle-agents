@@ -1,4 +1,4 @@
-# Model change requests — Sales (raised by the report domain, RP-02)
+# Model change requests — Sales (raised by the report domain, RPT-02)
 
 | Id | Requested | Measure / object | Why | Status |
 | -- | --------- | ---------------- | --- | ------ |

@@ -1,8 +1,8 @@
-/// Sales fact — one row per receipt line. No measures here (MS-03), no calculated columns (DX-23).
+/// Sales fact — one row per receipt line. No measures here (MOD-03), no calculated columns (DAX-23).
 table Sales
 	isHidden
 
-	annotation fsm_table_type = fact
+	annotation table_type = fact
 
 	column DateKey
 		dataType: int64

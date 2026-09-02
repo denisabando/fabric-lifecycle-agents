@@ -1,5 +1,5 @@
 ---
-name: fsm-engagement-workflow
+name: engagement-workflow
 description: "The consulting engagement workflow for semantic model delivery: discovery → model spec → build → review → deploy → handover. Defines the artefact each phase must produce, the approval gates between phases, and the templates to use. Load at the start of any engagement task and whenever the user asks 'what's next' or 'where are we'."
 ---
 
@@ -27,7 +27,7 @@ the new sha and Review reopens if anything broke.
 | - | ----- | -------- | ------------------- | -------- |
 | R1 | Report spec | `_brief/report-spec.md` (Microsoft `powerbi-report-planning`) | client sign-off `status: approved` | — |
 | R2 | Design | design brief in the spec (Microsoft `powerbi-report-design`) | consultant accepts | — |
-| R3 | Build | `models/<Report>.Report/definition/**` PBIR in git | `powerbi-report-author validate` + `check-report-bindings.py --at <model_commit>` clean | (fsm-report-authoring) |
+| R3 | Build | `models/<Report>.Report/definition/**` PBIR in git | `powerbi-report-author validate` + `check-report-bindings.py --at <model_commit>` clean | (report) |
 | R4 | Review | `reviews/<Report>-report-<yyyymmdd>.md` | `result: pass` | `report-reviewer` |
 | R5 | Deploy | `deployments/<Report>-<env>-<yyyymmdd>.md` | model already in that env; prod token | `deployer` |
 | R6 | Handover | added to the model's handover pack | client acceptance | — |
@@ -40,11 +40,11 @@ Data Agents), and constraints (licensing, tooling the client can maintain). Popu
 `glossary.md` as terms come up.
 
 **Model spec.** Translate requirements into tables (with grain), dimensions, measures (name,
-description, formula intent, format), relationships, storage mode decision (MS-10/11/12), RLS
+description, formula intent, format), relationships, storage mode decision (MOD-10/11/12), RLS
 scope, and the top 20 glossary terms for synonyms. The spec is the contract — the agent builds
 *only* what is in it. Changes after approval go through a spec revision, not straight into TMDL.
 
-**Build.** Follow `fsm-semantic-model`. Work in small commits (one table / one measure group per
+**Build.** Follow `semantic-model`. Work in small commits (one table / one measure group per
 commit). The post-edit hook lints TMDL and runs BPA after every `.tmdl` change; fix findings
 before moving on.
 

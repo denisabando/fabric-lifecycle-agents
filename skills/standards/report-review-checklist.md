@@ -1,0 +1,13 @@
+# Report review checklist (RPT-*)
+
+- [ ] RPT-00 only PBIR files changed; no `.pbix`, no `localSettings.json` committed
+- [ ] `powerbi-report-author validate <Report>.Report` clean
+- [ ] RPT-01 `scripts/check-report-bindings.py ... --at <model_commit>` clean; sha matches the latest passing model review
+- [ ] RPT-02 no report-level measures / calculated fields
+- [ ] RPT-03 `definition.pbir` is `byPath` (build) — deployer will switch
+- [ ] RPT-04 theme is the firm theme or a client-approved one; no hard-coded series colours
+- [ ] RPT-05 every page has an archetype in the spec, ≤ 8 visuals
+- [ ] RPT-06 alt text on every visual, tab order set, contrast checked
+- [ ] RPT-07 readable page / visual names
+- [ ] RPT-08 visual titles use glossary terms
+- [ ] Desktop screenshot of each page attached (MS `screenshot-review.md`)

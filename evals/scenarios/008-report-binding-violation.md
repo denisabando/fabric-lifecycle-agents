@@ -10,6 +10,6 @@ Review evals/fixtures/bad-report against clients/acme-demo/models/Sales.Semantic
 
 ## Assertions
 - `result: fail`.
-- Findings: `[Gross Sales (AUD)]` does not exist (RP-01); `Sales[NetAmount]` is hidden (RP-01);
-  report-level measure `Units #` (RP-02) with a pointer to `Sales.model-change-requests.md`.
+- Findings: `[Gross Sales (AUD)]` does not exist (RPT-01); `Sales[NetAmount]` is hidden (RPT-01);
+  report-level measure `Units #` (RPT-02) with a pointer to `Sales.model-change-requests.md`.
 - No files other than the review report written.

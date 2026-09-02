@@ -2,7 +2,7 @@
 table Date
 	dataCategory: Time
 
-	annotation fsm_table_type = dimension
+	annotation table_type = dimension
 
 	column DateKey
 		dataType: int64

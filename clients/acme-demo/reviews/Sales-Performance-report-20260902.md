@@ -11,11 +11,11 @@ result: pass
 # Review — Sales Performance (report)
 
 - validate: CLI not available in this environment — to be run on a consultant machine before deploy
-- RP-01 binding check vs Sales.SemanticModel at the reviewed commit: 10 references, 0 findings
-- RP-02: no report-level measures (Units # deferred to CR-01)
-- RP-03: `byPath` binding to `../Sales.SemanticModel`
-- RP-05: 1 page, archetype Overview, 4 visuals
-- RP-06: alt text on all 4 visuals; tab order set
-- RP-07/08: readable names; glossary titles
+- RPT-01 binding check vs Sales.SemanticModel at the reviewed commit: 10 references, 0 findings
+- RPT-02: no report-level measures (Units # deferred to CR-01)
+- RPT-03: `byPath` binding to `../Sales.SemanticModel`
+- RPT-05: 1 page, archetype Overview, 4 visuals
+- RPT-06: alt text on all 4 visuals; tab order set
+- RPT-07/08: readable names; glossary titles
 
 Verdict: pass. Eligible for deploy to dev once the Sales model is deployed there.

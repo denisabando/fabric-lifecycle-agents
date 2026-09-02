@@ -9,8 +9,8 @@ case "$FILE" in
     ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
     REP="${FILE%%.Report/*}.Report"; CLIENT_DIR="$(dirname "$(dirname "$REP")")"
     MODEL="$(ls -d "$CLIENT_DIR"/models/*.SemanticModel 2>/dev/null | head -n1)"
-    [ -n "$MODEL" ] && python3 "$ROOT/scripts/check-report-bindings.py" "$REP" "$MODEL" || echo "[fsm] no semantic model beside $REP (RP-01)"
-    command -v powerbi-report-author >/dev/null 2>&1 && powerbi-report-author validate "$REP" | tail -n 10 || echo "[fsm] PBIR validate skipped (powerbi-report-author not on PATH)"
+    [ -n "$MODEL" ] && python3 "$ROOT/scripts/check-report-bindings.py" "$REP" "$MODEL" || echo "[hook] no semantic model beside $REP (RPT-01)"
+    command -v powerbi-report-author >/dev/null 2>&1 && powerbi-report-author validate "$REP" | tail -n 10 || echo "[hook] PBIR validate skipped (powerbi-report-author not on PATH)"
     exit 0 ;;
   *) exit 0 ;;
 esac
@@ -20,6 +20,6 @@ DEF_DIR="$(dirname "$FILE")"; while [ "$(basename "$DEF_DIR")" != "definition" ]
 if command -v TabularEditor.exe >/dev/null 2>&1 && [ "$DEF_DIR" != "/" ]; then
   TabularEditor.exe "$DEF_DIR" -A "$ROOT/rules/bpa-rules.json" -V 2>&1 | tail -n 20
 else
-  echo "[fsm] BPA skipped (Tabular Editor CLI not on PATH). Reviewer will run it."
+  echo "[hook] BPA skipped (Tabular Editor CLI not on PATH). Reviewer will run it."
 fi
 exit 0

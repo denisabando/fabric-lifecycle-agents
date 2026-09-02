@@ -1,4 +1,4 @@
-# Fabric Semantic Model Agent — Design
+# Fabric Lifecycle Agents — Design
 
 *Draft, 2 Sept 2026*
 
@@ -15,7 +15,7 @@ The single design principle: **layer, don't fork.** Microsoft's skill is vendore
 ## 3. Repository layout
 
 ```
-fabric-semantic-model-agent/
+fabric-lifecycle-agents/
 ├── .claude-plugin/
 │   ├── plugin.json                 # name, version, skills/agents/hooks paths
 │   └── marketplace.json            # so consultants can `/plugin marketplace add <repo>`
@@ -23,13 +23,13 @@ fabric-semantic-model-agent/
 ├── vendor/
 │   └── skills-for-fabric/          # git submodule, pinned SHA, READ-ONLY
 ├── skills/                         # firm-owned overlay (all prefixed fsm- to avoid collisions)
-│   ├── fsm-semantic-model/         # ENTRY POINT / orchestrator — the only skill users invoke
+│   ├── semantic-model/         # ENTRY POINT / orchestrator — the only skill users invoke
 │   │   └── SKILL.md
-│   ├── fsm-modeling-standards/     # naming, star-schema rules, display folders, calc groups,
+│   ├── standards/modeling.md/     # naming, star-schema rules, display folders, calc groups,
 │   │   ├── SKILL.md                # date table, RLS/OLS patterns, Direct Lake guardrails
 │   │   └── references/
-│   ├── fsm-dax-standards/          # DAX style, variable use, anti-patterns, perf checklist
-│   ├── fsm-engagement-workflow/    # discovery → spec → build → review → deploy → handover
+│   ├── standards/dax.md/          # DAX style, variable use, anti-patterns, perf checklist
+│   ├── engagement-workflow/    # discovery → spec → build → review → deploy → handover
 │   │   ├── SKILL.md
 │   │   └── templates/              # requirements questionnaire, model spec, sign-off doc
 │   ├── fsm-review/                 # review checklist + how to run BPA with firm rules
@@ -68,17 +68,17 @@ fabric-semantic-model-agent/
 
 ## 4. How the layers combine (the orchestrator)
 
-`skills/fsm-semantic-model/SKILL.md` is the only skill a consultant invokes (`/fsm-semantic-model build the sales model from clients/acme/spec.md`). It does four things:
+`skills/semantic-model/SKILL.md` is the only skill a consultant invokes (`/semantic-model build the sales model from clients/acme/spec.md`). It does four things:
 
 1. **Loads the base.** Points the model at `vendor/skills-for-fabric/plugins/powerbi-authoring/skills/semantic-model-authoring/SKILL.md` and says: follow it for *how* to do things (tool routing, MCP calls, TMDL syntax, deployment mechanics).
-2. **Applies firm standards.** Loads `fsm-modeling-standards` and `fsm-dax-standards` and says: these govern *what a good model looks like* — naming, structure, DAX style, review gates. Where Microsoft's guidance and firm guidance conflict, firm wins, and the conflict is logged to `rules/precedence.md` so it's reviewed on the next upstream sync.
+2. **Applies firm standards.** Loads `standards/modeling.md` and `standards/dax.md` and says: these govern *what a good model looks like* — naming, structure, DAX style, review gates. Where Microsoft's guidance and firm guidance conflict, firm wins, and the conflict is logged to `skills/standards/overrides.md` so it's reviewed on the next upstream sync.
 3. **Applies client overrides.** If `clients/<code>/overrides.md` exists, it beats both. Typical contents: "measures live in a dedicated `_Measures` table", "fiscal year starts July", "no calc groups — client's Tabular Editor licence is free tier".
-4. **Runs the engagement workflow.** `fsm-engagement-workflow` defines the phases and the artefact each must produce before the next starts (requirements → approved model spec → TMDL in PBIP → review report → deployment record → handover pack). The agent refuses to build before a spec is approved, and refuses to deploy to a workspace tagged `prod` in `engagement.yaml` without an explicit human confirmation.
+4. **Runs the engagement workflow.** `engagement-workflow` defines the phases and the artefact each must produce before the next starts (requirements → approved model spec → TMDL in PBIP → review report → deployment record → handover pack). The agent refuses to build before a spec is approved, and refuses to deploy to a workspace tagged `prod` in `engagement.yaml` without an explicit human confirmation.
 
-Precedence, stated once in `rules/precedence.md` and echoed in the orchestrator:
+Precedence, stated once in `skills/standards/overrides.md` and echoed in the orchestrator:
 
 ```
-client override  >  firm rules (fsm-*)  >  Microsoft skill  >  model's own judgement
+client override  >  firm standards  >  Microsoft skill  >  model's own judgement
 ```
 
 Microsoft's skill is never edited. If a firm rule needs to *suppress* something Microsoft recommends, the suppression is written in the firm skill ("ignore the MS guidance on X because Y"), which keeps the diff against upstream clean.
@@ -117,9 +117,9 @@ Also worth doing: a small script that extracts every rule-like sentence from the
 ## 8. Build order
 
 1. Scaffold the repo, add the submodule, write `plugin.json` / `.mcp.json`, confirm the vendored MS skill works unmodified through the orchestrator on a sample PBIP.
-2. Write `fsm-modeling-standards` and `fsm-dax-standards` from the firm's existing standards docs; encode the testable ones in `bpa-rules.json` and `naming.yaml`.
+2. Write `standards/modeling.md` and `standards/dax.md` from the firm's existing standards docs; encode the testable ones in `bpa-rules.json` and `naming.yaml`.
 3. Add the reviewer subagent + post-edit hook so every TMDL change is linted.
-4. Write `fsm-engagement-workflow` with the templates; add the deploy guardrail hook.
+4. Write `engagement-workflow` with the templates; add the deploy guardrail hook.
 5. Build 5–10 eval scenarios from real (anonymised) engagement asks; wire `evals.yml`.
 6. Add `upstream-sync.yml` and run it once by hand to prove the PR flow.
 7. Tag v1.0.0, publish the marketplace manifest, pilot on one engagement.

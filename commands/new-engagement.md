@@ -10,4 +10,4 @@ start month, environments (workspace names — IDs are resolved later via the Mi
 deployment method, storage mode default, whether calc groups are allowed, `allow_data_reads`.
 Remind the consultant that real client folders are git-ignored and should live in the client's
 repo or a private per-client repo (see README → Client isolation).
-Finish by loading `fsm-engagement-workflow` and starting Discovery.
+Finish by loading `engagement-workflow` and starting Discovery.
