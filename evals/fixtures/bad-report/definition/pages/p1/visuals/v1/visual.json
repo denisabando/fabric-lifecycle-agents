@@ -1,0 +1,12 @@
+{
+  "name": "v1",
+  "position": { "x": 0, "y": 0, "z": 0, "height": 100, "width": 100 },
+  "visual": {
+    "visualType": "card",
+    "query": { "queryState": { "Values": { "projections": [
+      { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "_Measures" } }, "Property": "Gross Sales (AUD)" } }, "queryRef": "_Measures.Gross Sales (AUD)" },
+      { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Sales" } }, "Property": "NetAmount" } }, "queryRef": "Sales.NetAmount" }
+    ] } } },
+    "measures": [ { "name": "Units #", "expression": "SUM('Sales'[Quantity])" } ]
+  }
+}

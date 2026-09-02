@@ -1,0 +1,6 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/2.0.0/schema.json",
+  "themeCollection": { "baseTheme": { "name": "CY24SU06", "reportVersionAtImport": "5.55", "type": "SharedResources" } },
+  "settings": { "useNewFilterPaneExperience": true, "defaultFilterActionIsDataFilter": true },
+  "annotations": [ { "name": "fsm_client", "value": "acme-demo" }, { "name": "fsm_model_contract", "value": "Sales v1" } ]
+}

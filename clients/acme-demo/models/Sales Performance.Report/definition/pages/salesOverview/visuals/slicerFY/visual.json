@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "slicerFY",
+  "position": { "x": 960, "y": 40, "z": 500, "height": 120, "width": 280, "tabOrder": 500 },
+  "visual": {
+    "visualType": "slicer",
+    "query": { "queryState": { "Values": { "projections": [
+      { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Date" } }, "Property": "Fiscal Year" } }, "queryRef": "Date.Fiscal Year", "nativeQueryRef": "Fiscal Year" }
+    ] } } },
+    "visualContainerObjects": {
+      "title": [ { "properties": { "text": { "expr": { "Literal": { "Value": "'Fiscal Year'" } } } } } ],
+      "general": [ { "properties": { "altText": { "expr": { "Literal": { "Value": "'Slicer to select the fiscal year'" } } } } } ]
+    }
+  }
+}

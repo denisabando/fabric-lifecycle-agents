@@ -22,6 +22,14 @@ jobs:
           set -e
           for f in $(find evals/fixtures -name '*.tmdl'); do python3 scripts/lint-tmdl.py "$f" rules/naming.yaml; done
 
+      - name: PBIR JSON is well-formed
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, sys
+          bad = [str(f) for f in pathlib.Path("clients").rglob("*.Report/**/*.json") if not (lambda f: json.loads(f.read_text()) or True)(f)]
+          print("ok")
+          PY
+
       - name: Validate rules JSON / plugin manifest
         run: |
           python3 -c "import json;json.load(open('rules/bpa-rules.json'));json.load(open('.claude-plugin/plugin.json'));json.load(open('hooks/hooks.json'))"

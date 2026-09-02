@@ -13,6 +13,17 @@ if printf '%s' "$TOOL" | grep -Eq '^mcp__powerbi-modeling-mcp__' && \
   exit 2
 fi
 
+# 0b. RP-00 — reports are PBIR in git: never write .pbix, never commit localSettings
+if printf '%s' "$ARGS" | grep -Eiq '"(file_path|path)"\s*:\s*"[^"]*\.(pbix|pbit)"|\.pbi/localSettings\.json'; then
+  echo "BLOCKED (RP-00): reports are authored as PBIR files in git; .pbix/.pbit and localSettings.json are never written or committed." >&2
+  exit 2
+fi
+# 0c. RP-01 — the report domain may not read TMDL or a live model for field names; it binds via the contract
+if printf '%s' "$ARGS" | grep -Eq '"file_path"\s*:\s*"[^"]*\.Report/' && [ "${FSM_DOMAIN:-}" = "report" ] && printf '%s' "$ARGS" | grep -Eq '\.tmdl'; then
+  echo "BLOCKED (RP-01): bind through clients/<code>/contracts/<Model>.model-contract.yaml, not TMDL." >&2
+  exit 2
+fi
+
 # 1. vendor/ is read-only
 if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*vendor/'; then
   echo "BLOCKED: vendor/ is Microsoft's skill, pinned and read-only. Put firm changes in skills/fsm-* and log overrides in rules/precedence.md." >&2

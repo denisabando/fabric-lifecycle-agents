@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "cardNetSales",
+  "position": { "x": 40, "y": 40, "z": 1000, "height": 120, "width": 280, "tabOrder": 1000 },
+  "visual": {
+    "visualType": "card",
+    "query": { "queryState": { "Values": { "projections": [
+      { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "_Measures" } }, "Property": "Net Sales (AUD)" } }, "queryRef": "_Measures.Net Sales (AUD)", "nativeQueryRef": "Net Sales (AUD)" }
+    ] } } },
+    "visualContainerObjects": {
+      "title": [ { "properties": { "text": { "expr": { "Literal": { "Value": "'Net Sales'" } } } } } ],
+      "general": [ { "properties": { "altText": { "expr": { "Literal": { "Value": "'Card showing total net sales in AUD for the selected period'" } } } } } ]
+    }
+  }
+}

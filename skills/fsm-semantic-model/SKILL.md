@@ -6,7 +6,7 @@ description: "ENTRY POINT for all semantic model work on a client engagement. Us
 # fsm-semantic-model — orchestrator
 
 You are working on a **client BI engagement**. Every model you touch will be reviewed, deployed
-and handed over. Act accordingly: text-based (TMDL) artefacts in git, an evidence trail, no
+and handed over. Act accordingly: text-based (TMDL) artifacts in git, an evidence trail, no
 surprises in prod.
 
 ## 1. Establish context (always, before any modelling)
@@ -61,7 +61,20 @@ reviewed on the next upstream sync. **Never edit anything under `vendor/`.**
 - The Modeling MCP is read-only on engagements (inspect, validate DAX, analyse). If a user asks
   for a live edit, explain MS-00 and offer the TMDL edit instead.
 
-## 5. Output contract
+## 5. Handoff to the report domain
+
+When a review passes, generate the model contract and commit it:
+
+```bash
+python3 scripts/gen-model-contract.py clients/<code>/models/<Model>.SemanticModel \
+  clients/<code>/contracts/<Model>.model-contract.yaml --status approved
+```
+
+Any later model change regenerates it as `--status draft`; the report track's gates reopen until a
+new review passes. Read `contracts/<Model>.change-requests.md` for measures the report domain
+needs — they are spec revisions, not ad-hoc additions.
+
+## 6. Output contract
 
 Finish every task with a short block:
 

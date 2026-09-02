@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "tblStore",
+  "position": { "x": 760, "y": 190, "z": 3000, "height": 300, "width": 480, "tabOrder": 3000 },
+  "visual": {
+    "visualType": "tableEx",
+    "query": { "queryState": { "Values": { "projections": [
+      { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Store" } }, "Property": "Region" } }, "queryRef": "Store.Region", "nativeQueryRef": "Region" },
+      { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Store" } }, "Property": "Store" } }, "queryRef": "Store.Store", "nativeQueryRef": "Store" },
+      { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "_Measures" } }, "Property": "Net Sales (AUD)" } }, "queryRef": "_Measures.Net Sales (AUD)", "nativeQueryRef": "Net Sales (AUD)" },
+      { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "_Measures" } }, "Property": "Net Sales YoY %" } }, "queryRef": "_Measures.Net Sales YoY %", "nativeQueryRef": "Net Sales YoY %" },
+      { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "_Measures" } }, "Property": "Avg Basket (AUD)" } }, "queryRef": "_Measures.Avg Basket (AUD)", "nativeQueryRef": "Avg Basket (AUD)" }
+    ] } } },
+    "visualContainerObjects": {
+      "title": [ { "properties": { "text": { "expr": { "Literal": { "Value": "'Net Sales by Store'" } } } } } ],
+      "general": [ { "properties": { "altText": { "expr": { "Literal": { "Value": "'Table of stores by region with net sales, year-over-year growth and average basket'" } } } } } ]
+    }
+  }
+}

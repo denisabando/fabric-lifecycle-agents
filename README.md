@@ -12,6 +12,21 @@ per-client overrides — **without ever editing Microsoft's files**.
 > `vendor/` is read-only. Everything the firm owns lives beside it under `skills/fsm-*`, `rules/`,
 > `agents/`, `hooks/` and `commands/`, and the orchestrator skill says how the layers combine.
 
+## Two domains, one handoff
+
+| Domain | Entry skill | Microsoft base | Firm rules | Produces |
+| --- | --- | --- | --- | --- |
+| Semantic model | `fsm-semantic-model` | `semantic-model-authoring` | `MS-*`, `DX-*` | PBIP/TMDL model + **model contract** |
+| Report | `fsm-report-authoring` | `powerbi-report-planning/-design/-authoring/-management` | `RP-*` | PBIR report bound only to the contract |
+
+The **model contract** (`clients/<code>/contracts/<Model>.model-contract.yaml`) is generated from
+TMDL at the end of a passing model review and is the only thing the report domain may bind to.
+`scripts/check-report-contract.py` is the contract test at that boundary: it fails a report that
+references anything not in the approved contract, and fails everything if the contract is `draft`
+(i.e. the model changed since its last review). Agents talk through files in the client repo,
+never through each other's context. A lifecycle orchestrator above both is deferred until a third
+domain (e.g. ingestion) exists.
+
 ## Precedence
 
 ```
@@ -37,10 +52,12 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | `skills/fsm-engagement-workflow/` | Firm | Discovery → spec → build → review → deploy → handover, with templates |
 | `skills/fsm-review/` | Firm | Review checklist and how to run BPA with the firm rule set |
 | `skills/fsm-deployment/` | Firm | Workspace promotion, deployment pipelines, git integration |
+| `skills/fsm-report-authoring/` | Firm | **Report entry point.** RP-* rules, firm theme, review checklist |
+| `scripts/gen-model-contract.py`, `scripts/check-report-contract.py` | Firm | Contract generation + boundary test |
 | `rules/` | Firm | Machine-readable rules used by skills **and** CI (BPA, naming, precedence log) |
-| `agents/` | Firm | `modeler`, `reviewer` (read-only), `deployer` (approval-gated) subagents |
+| `agents/` | Firm | `modeler`, `reviewer`, `report-reviewer` (read-only), `deployer` (approval-gated) subagents |
 | `hooks/` | Firm | Enforcement: protect `vendor/`, lint TMDL on edit, gate prod deploys |
-| `commands/` | Firm | `/new-engagement`, `/review-model`, `/sync-upstream` |
+| `commands/` | Firm | `/new-engagement`, `/review-model`, `/build-report`, `/sync-upstream` |
 | `clients/` | Engagement | `_template/` is committed; real client folders are git-ignored (see below) |
 | `evals/` | Firm | Scenario evals + fixture PBIP models run on every PR |
 | `.github/workflows/` | Firm | Weekly upstream sync, evals on PR, release on tag |
@@ -67,7 +84,8 @@ CLI, so consultants forced onto Copilot at a client can use the same repo.
 ```text
 /new-engagement acme            # scaffolds clients/acme/ from clients/_template/
 /fsm-semantic-model build the Sales model from clients/acme/spec.md
-/review-model clients/acme/models/Sales.SemanticModel
+/review-model clients/acme/models/Sales.SemanticModel   # on pass → writes contracts/Sales.model-contract.yaml
+/build-report acme "Sales Performance"                    # requires the approved contract
 ```
 
 The orchestrator refuses to build before a spec is approved and refuses to deploy to a workspace

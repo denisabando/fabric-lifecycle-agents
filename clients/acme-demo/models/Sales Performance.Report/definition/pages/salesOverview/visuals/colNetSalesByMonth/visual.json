@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "colNetSalesByMonth",
+  "position": { "x": 40, "y": 190, "z": 2000, "height": 300, "width": 700, "tabOrder": 2000 },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": { "queryState": {
+      "Category": { "projections": [
+        { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Date" } }, "Property": "Fiscal Month" } }, "queryRef": "Date.Fiscal Month", "nativeQueryRef": "Fiscal Month" }
+      ] },
+      "Y": { "projections": [
+        { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "_Measures" } }, "Property": "Net Sales (AUD)" } }, "queryRef": "_Measures.Net Sales (AUD)", "nativeQueryRef": "Net Sales (AUD)" },
+        { "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "_Measures" } }, "Property": "Net Sales PY (AUD)" } }, "queryRef": "_Measures.Net Sales PY (AUD)", "nativeQueryRef": "Net Sales PY (AUD)" }
+      ] }
+    } },
+    "visualContainerObjects": {
+      "title": [ { "properties": { "text": { "expr": { "Literal": { "Value": "'Net Sales by Fiscal Month vs Prior Year'" } } } } } ],
+      "general": [ { "properties": { "altText": { "expr": { "Literal": { "Value": "'Column chart comparing net sales to the prior year by fiscal month'" } } } } } ]
+    }
+  }
+}
