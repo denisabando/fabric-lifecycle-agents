@@ -25,13 +25,6 @@ jobs:
           grep -q 'UP_TO_DATE=false' sync-report.md && echo "changed=true" >> "$GITHUB_OUTPUT" || echo "changed=false" >> "$GITHUB_OUTPUT"
           echo "new=$(git -C vendor/skills-for-fabric rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Snapshot rule-like guidance for reviewers
-        if: steps.cmp.outputs.changed == 'true'
-        run: |
-          grep -rhoE '^\s*[-*] .*(must|never|always|should|do not|avoid)[^.]*\.' \
-            vendor/skills-for-fabric/plugins/powerbi-authoring/skills/semantic-model-authoring \
-            | sort -u > rules/upstream-rules.snapshot.md || true
-
       - name: Open PR
         if: steps.cmp.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6

@@ -2,7 +2,7 @@
   "name": "fsm-marketplace",
   "metadata": {
     "description": "Firm marketplace for the Fabric Semantic Model Agent",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "owner": {
     "name": "BI Practice",
@@ -13,7 +13,7 @@
       "name": "fabric-semantic-model-agent",
       "source": "./",
       "description": "Semantic model + report authoring agent for client BI engagements (Microsoft base + firm standards)",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ]
 }

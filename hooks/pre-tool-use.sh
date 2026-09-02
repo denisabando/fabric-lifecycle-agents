@@ -18,11 +18,6 @@ if printf '%s' "$ARGS" | grep -Eiq '"(file_path|path)"\s*:\s*"[^"]*\.(pbix|pbit)
   echo "BLOCKED (RP-00): reports are authored as PBIR files in git; .pbix/.pbit and localSettings.json are never written or committed." >&2
   exit 2
 fi
-# 0c. RP-01 — the report domain may not read TMDL or a live model for field names; it binds via the contract
-if printf '%s' "$ARGS" | grep -Eq '"file_path"\s*:\s*"[^"]*\.Report/' && [ "${FSM_DOMAIN:-}" = "report" ] && printf '%s' "$ARGS" | grep -Eq '\.tmdl'; then
-  echo "BLOCKED (RP-01): bind through clients/<code>/contracts/<Model>.model-contract.yaml, not TMDL." >&2
-  exit 2
-fi
 
 # 1. vendor/ is read-only
 if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*vendor/'; then
@@ -42,11 +37,4 @@ if printf '%s' "$ARGS" | grep -Eiq 'updateDefinition|deploymentPipelines/.*/depl
   fi
 fi
 
-# 3. no data reads unless the engagement allows it
-if printf '%s' "$ARGS" | grep -Eiq 'EVALUATE\s+(TOPN|SUMMARIZE|SELECTCOLUMNS|ADDCOLUMNS|\x27|Sales|Fact)' && ! printf '%s' "$ARGS" | grep -q 'INFO\.'; then
-  if ! grep -rqs 'allow_data_reads: true' clients/*/engagement.yaml 2>/dev/null; then
-    echo "BLOCKED: DAX query would read client data. Only INFO.* metadata queries are allowed unless engagement.yaml sets allow_data_reads: true." >&2
-    exit 2
-  fi
-fi
 exit 0

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0] - 2026-09-02
+### Changed — simplification pass
+- **Model contract file removed.** The handoff to the report domain is now the `model_commit`
+  recorded by a passing model review; reports read TMDL at that sha (Microsoft's own path) and bind
+  to visible objects. `scripts/check-report-bindings.py --at <sha>` replaces the contract generator +
+  contract check. Change requests move to `clients/<code>/<Model>.model-change-requests.md`.
+- `fsm-review` and `fsm-deployment` skills folded into the `reviewer` and `deployer` agents (they were
+  only ever read by those agents). Four firm skills remain for the model domain.
+- Removed `.mcp.json` (duplicate of the plugin manifest), two brittle hook heuristics (DAX data-read
+  regex, FSM_DOMAIN TMDL guard) and the speculative upstream "rule snapshot" step.
+
 ## [0.2.0] - 2026-09-02
 ### Added
 - Report-authoring domain: `fsm-report-authoring` entry skill (RP-00..RP-08), `report-reviewer`

@@ -2,7 +2,7 @@
 
 - [ ] RP-00 only PBIR files changed; no `.pbix`, no `localSettings.json` committed
 - [ ] `powerbi-report-author validate <Report>.Report` clean
-- [ ] RP-01 `scripts/check-report-contract.py` clean against the approved contract
+- [ ] RP-01 `scripts/check-report-bindings.py ... --at <model_commit>` clean; sha matches the latest passing model review
 - [ ] RP-02 no report-level measures / calculated fields
 - [ ] RP-03 `definition.pbir` is `byPath` (build) — deployer will switch
 - [ ] RP-04 theme is the firm theme or a client-approved one; no hard-coded series colours

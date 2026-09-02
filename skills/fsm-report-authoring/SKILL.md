@@ -1,20 +1,21 @@
 ---
 name: fsm-report-authoring
-description: "ENTRY POINT for all Power BI report work on a client engagement: plan, design, build, review and publish PBIR reports on top of an approved semantic model. Orchestrates Microsoft's powerbi-report-planning / -design / -authoring / -management skills (how) with firm report standards (what good looks like) and client overrides. Requires an approved model contract. Do not invoke the Microsoft report skills directly on an engagement — go through this one."
+description: "ENTRY POINT for all Power BI report work on a client engagement: plan, design, build, review and publish PBIR reports on top of an approved semantic model. Orchestrates Microsoft's powerbi-report-planning / -design / -authoring / -management skills (how) with firm report standards (what good looks like) and client overrides. Binds only to a reviewed model commit. Do not invoke the Microsoft report skills directly on an engagement — go through this one."
 ---
 
 # fsm-report-authoring — orchestrator (report domain)
 
-Downstream of `fsm-semantic-model`. You never touch the semantic model; you consume its
-**model contract** and produce PBIR report files in the client's git repo.
+Downstream of `fsm-semantic-model`. You never touch the semantic model; you build against a
+**reviewed commit** of it and produce PBIR report files in the client's git repo.
 
 ## 1. Establish context
 
 1. Identify the engagement (`clients/<code>/engagement.yaml`), read `overrides.md`, `glossary.md`.
-2. **Require the model contract**: `clients/<code>/contracts/<Model>.model-contract.yaml` with
-   `status: approved`. If missing or `draft`, stop: the model phase has not finished review.
-   The contract — not the TMDL, not a live model — is the only source of table / column /
-   measure names you may bind to (**RP-01**).
+2. **Pin the reviewed model**: find the latest `clients/<code>/reviews/<Model>-<date>.md` with
+   `result: pass` and take its `model_commit`. If there is none, stop: the model has not been
+   reviewed. Read the model's TMDL **at that commit** (`git show <sha>:<path>`; Microsoft's
+   `pbip.md` / `tmdl-guidelines.md` explain the files) for table / column / measure names, and
+   record the sha in the report spec (**RP-01**).
 3. Determine the report phase (see `fsm-engagement-workflow` → report track) and confirm the
    previous artefact exists.
 
@@ -27,7 +28,7 @@ client override  >  firm rules (RP-*)  >  Microsoft report skills  >  your own j
 | Layer | Load | Governs |
 | --- | --- | --- |
 | Client | `clients/<code>/overrides.md` | anything it states |
-| Firm | this file § Rules, `references/report-review-checklist.md` | PBIR-only path, binding via contract, page/visual standards, review gates |
+| Firm | this file § Rules, `references/report-review-checklist.md` | PBIR-only path, binding to the reviewed commit, page/visual standards, review gates |
 | Microsoft | `powerbi-report-planning` → requirements → `_brief/report-spec.md`; `powerbi-report-design` → design brief; `powerbi-report-authoring` → PBIR mechanics + `powerbi-report-author validate`; `powerbi-report-management` → publish via REST | how |
 
 Use Microsoft's planning skill to produce the report spec, its design skill for the brief, its
@@ -43,12 +44,15 @@ guidance, the higher layer wins and the conflict is appended to `rules/precedenc
   place changes are made (Desktop is for `powerbi-desktop` reload / screenshot verification
   only). Overrides nothing in Microsoft's skill (it is PBIR-native) but is stated as rule zero
   to match MS-00.
-- **RP-01 Bind only through the model contract.** Every `Column` / `Measure` expression in a
-  `visual.json`, filter or sort must resolve to an entry in the approved contract.
-  `scripts/check-report-contract.py` enforces this; the reviewer fails the report otherwise.
+- **RP-01 Bind to the reviewed model commit, visible objects only.** Every `Column` / `Measure`
+  expression in a `visual.json`, filter or sort must resolve to a visible object in the model's
+  TMDL at the `model_commit` of the latest passing model review — not the working tree, not a
+  live model. `scripts/check-report-bindings.py <Report>.Report <Model>.SemanticModel --at <sha>`
+  enforces this; the reviewer fails the report otherwise. If the model is re-reviewed at a new
+  commit, re-run the check and re-pin.
 - **RP-02 No report-level measures or calculated fields.** If a number is missing, raise a
-  model change request (`contracts/<Model>.change-requests.md`); do not work around it in the
-  report. (Overrides the MS authoring skill's allowance for report measures — logged.)
+  model change request (`clients/<code>/<Model>.model-change-requests.md`); do not work around
+  it in the report. (Overrides the MS authoring skill's allowance for report measures — logged.)
 - **RP-03 Binding mode**: `definition.pbir` uses `byPath` to the sibling `.SemanticModel` in the
   repo during build; the deployer switches to `byConnection` for the target workspace.
 - **RP-04 Firm theme** from `references/firm-theme.json` unless a client override supplies one;
@@ -66,7 +70,7 @@ guidance, the higher layer wins and the conflict is appended to `rules/precedenc
 | Task | Subagent |
 | --- | --- |
 | Author / edit PBIR | (this skill, via MS authoring skill) |
-| Review a report | `report-reviewer` (read-only; runs validate + contract check + checklist) |
+| Review a report | `report-reviewer` (read-only; runs validate + binding check + checklist) |
 | Publish | `deployer` (same gates as models; report deploys also require the model already deployed to that env) |
 
 ## 5. Output contract
@@ -74,7 +78,7 @@ guidance, the higher layer wins and the conflict is appended to `rules/precedenc
 ```
 Phase:        <report-spec|design|build|review|deploy>
 Changed:      <files / pages / visuals>
-Contract:     <model-contract version bound>
+Model commit: <sha the report is bound to>
 Rules applied: <RP-* / CO-* ids>
 Overrides:    <any MS guidance overridden, with precedence.md entry>
 Next gate:    <what must happen before the next phase>

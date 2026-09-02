@@ -11,6 +11,6 @@ it is re-examined on each upstream sync (the sync PR links to this file).
 | ---- | ---- | ------------------------ | --- | ---------------- |
 | 2026-09-02 | MS-00 TMDL/PBIP only, no live edits | `SKILL.md` § Tool Selection Priority Tier 1 (MCP live authoring against Desktop / workspace) | every engagement change must be a reviewable, reproducible git diff; MCP allowed read-only against the PBIP folder | yes — re-check if MS changes tiering or adds a TMDL-first mode |
 | 2026-09-02 | RP-02 no report-level measures | `powerbi-report-authoring` permits report measures | numbers belong in the model so every consumer (Copilot, Excel, other reports) sees the same definition; raise a change request instead | yes |
-| 2026-09-02 | RP-01 bind only via the model contract | `powerbi-report-authoring` Quick Start step 2 reads TMDL / MCP for names | reports must not depend on unreviewed model state; the contract is the reviewed interface | yes |
+| 2026-09-02 | RP-01 bind to the reviewed model commit, visible objects only | `powerbi-report-authoring` Quick Start step 2 reads the current TMDL / live MCP model for names | reports must not depend on unreviewed model state; the sha in the passing review is the interface | yes |
 | 2026-09-02 | MS-03 measures in `_Measures` table only | `naming-conventions.md` allows measures on fact tables | consistency across engagements; handover docs generated per table | yes |
 | 2026-09-02 | MS-21 no OLS by default | `modeling-guidelines.md` presents OLS as an option | breaks Copilot / Data Agent readiness (MS-30) | yes |

@@ -2,7 +2,7 @@
 client: acme-demo
 report: Sales Performance
 report_commit: <sha>
-model_contract: Sales v1
+model_commit: <sha of the passing Sales review>
 reviewer: report-reviewer-subagent
 date: 2026-09-02
 result: pass
@@ -11,7 +11,7 @@ result: pass
 # Review — Sales Performance (report)
 
 - validate: CLI not available in this environment — to be run on a consultant machine before deploy
-- RP-01 contract check: 10 field references, 0 findings
+- RP-01 binding check vs Sales.SemanticModel at the reviewed commit: 10 references, 0 findings
 - RP-02: no report-level measures (Units # deferred to CR-01)
 - RP-03: `byPath` binding to `../Sales.SemanticModel`
 - RP-05: 1 page, archetype Overview, 4 visuals

@@ -47,8 +47,8 @@ reviewed on the next upstream sync. **Never edit anything under `vendor/`.**
 | Task | Subagent | Notes |
 | --- | --- | --- |
 | Create / modify model objects | `modeler` | uses Modeling MCP; falls back to TMDL per MS skill |
-| Review a model | `reviewer` | read-only; runs BPA with `rules/bpa-rules.json` + firm checklist |
-| Promote between workspaces | `deployer` | refuses `prod` without the confirmation token |
+| Review a model | `reviewer` | read-only; BPA + firm rules + perf; its report pins `model_commit` |
+| Promote between workspaces | `deployer` | gates + mechanisms live in its instructions; refuses `prod` without the token |
 
 ## 4. Always-on rules (short list; details in the firm skills)
 
@@ -63,16 +63,11 @@ reviewed on the next upstream sync. **Never edit anything under `vendor/`.**
 
 ## 5. Handoff to the report domain
 
-When a review passes, generate the model contract and commit it:
-
-```bash
-python3 scripts/gen-model-contract.py clients/<code>/models/<Model>.SemanticModel \
-  clients/<code>/contracts/<Model>.model-contract.yaml --status approved
-```
-
-Any later model change regenerates it as `--status draft`; the report track's gates reopen until a
-new review passes. Read `contracts/<Model>.change-requests.md` for measures the report domain
-needs — they are spec revisions, not ad-hoc additions.
+The handoff is the **reviewed commit**: a passing review report records `model_commit`, and the
+report domain builds against the model's TMDL at that sha. Nothing to generate. After any later
+model change, the report track re-runs `scripts/check-report-bindings.py --at <new sha>` once a
+new review passes. Read `clients/<code>/<Model>.model-change-requests.md` for measures the report
+domain needs — they are spec revisions, not ad-hoc additions.
 
 ## 6. Output contract
 

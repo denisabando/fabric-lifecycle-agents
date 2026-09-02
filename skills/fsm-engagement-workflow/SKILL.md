@@ -19,16 +19,15 @@ that artefact exists (and, where marked, is approved). Gates are also enforced b
 
 ## Report track (downstream domain)
 
-Starts only when the model track has produced an **approved model contract**
-(`contracts/<Model>.model-contract.yaml`, written by `gen-model-contract.py --status approved`
-at the end of a passing model review). If the model changes afterwards, the contract is
-regenerated as `draft`, and every report phase after Report spec reopens.
+Starts only when the model track has a **passing review** whose `model_commit` the report can
+pin to. If the model is changed and re-reviewed later, the report's binding check is re-run against
+the new sha and Review reopens if anything broke.
 
 | # | Phase | Artefact | Gate to leave phase | Subagent |
 | - | ----- | -------- | ------------------- | -------- |
 | R1 | Report spec | `_brief/report-spec.md` (Microsoft `powerbi-report-planning`) | client sign-off `status: approved` | — |
 | R2 | Design | design brief in the spec (Microsoft `powerbi-report-design`) | consultant accepts | — |
-| R3 | Build | `models/<Report>.Report/definition/**` PBIR in git | `powerbi-report-author validate` + `check-report-contract.py` clean | (fsm-report-authoring) |
+| R3 | Build | `models/<Report>.Report/definition/**` PBIR in git | `powerbi-report-author validate` + `check-report-bindings.py --at <model_commit>` clean | (fsm-report-authoring) |
 | R4 | Review | `reviews/<Report>-report-<yyyymmdd>.md` | `result: pass` | `report-reviewer` |
 | R5 | Deploy | `deployments/<Report>-<env>-<yyyymmdd>.md` | model already in that env; prod token | `deployer` |
 | R6 | Handover | added to the model's handover pack | client acceptance | — |
@@ -49,13 +48,12 @@ scope, and the top 20 glossary terms for synonyms. The spec is the contract — 
 commit). The post-edit hook lints TMDL and runs BPA after every `.tmdl` change; fix findings
 before moving on.
 
-**Review.** `reviewer` is read-only. On `result: pass` it (or the orchestrator) runs
-`scripts/gen-model-contract.py <Model>.SemanticModel contracts/<Model>.model-contract.yaml --status approved`
-and commits the contract — this is the handoff to the report track. It runs Tabular Editor BPA with `rules/bpa-rules.json`,
-walks the `fsm-review` checklist, runs the DAX performance checklist, and writes the report.
+**Review.** `reviewer` is read-only. It runs Tabular Editor BPA with `rules/bpa-rules.json`,
+walks the firm checklist, runs the DAX performance checklist, and writes the report with the
+`model_commit` it reviewed — that sha is the handoff to the report track.
 Findings go back to Build.
 
-**Deploy.** `deployer` promotes dev → test → prod using the mechanism in `engagement.yaml`
+**Deploy.** `deployer` (its instructions carry the gates and mechanisms) promotes dev → test → prod using the mechanism in `engagement.yaml`
 (`deployment_pipeline` | `git_integration` | `rest_updateDefinition`). Prod requires the human
 to type the confirmation token printed by the hook.
 
@@ -65,5 +63,5 @@ client-facing pack from `templates/handover.md`.
 
 ## Status check
 
-When asked "where are we", list the six model phases and, if a contract exists, the six report phases, with ✅ / ⏳ / ⬜ based on which artefacts exist
+When asked "where are we", list the six model phases and, if a report spec exists, the six report phases, with ✅ / ⏳ / ⬜ based on which artefacts exist
 and their `status:` field, and name the next gate.

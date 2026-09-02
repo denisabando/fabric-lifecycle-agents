@@ -16,15 +16,16 @@ per-client overrides — **without ever editing Microsoft's files**.
 
 | Domain | Entry skill | Microsoft base | Firm rules | Produces |
 | --- | --- | --- | --- | --- |
-| Semantic model | `fsm-semantic-model` | `semantic-model-authoring` | `MS-*`, `DX-*` | PBIP/TMDL model + **model contract** |
-| Report | `fsm-report-authoring` | `powerbi-report-planning/-design/-authoring/-management` | `RP-*` | PBIR report bound only to the contract |
+| Semantic model | `fsm-semantic-model` | `semantic-model-authoring` | `MS-*`, `DX-*` | PBIP/TMDL model + a passing review that pins `model_commit` |
+| Report | `fsm-report-authoring` | `powerbi-report-planning/-design/-authoring/-management` | `RP-*` | PBIR report bound to visible objects at that commit |
 
-The **model contract** (`clients/<code>/contracts/<Model>.model-contract.yaml`) is generated from
-TMDL at the end of a passing model review and is the only thing the report domain may bind to.
-`scripts/check-report-contract.py` is the contract test at that boundary: it fails a report that
-references anything not in the approved contract, and fails everything if the contract is `draft`
-(i.e. the model changed since its last review). Agents talk through files in the client repo,
-never through each other's context. A lifecycle orchestrator above both is deferred until a third
+The handoff is a **git commit, not a document**. When the model reviewer passes a model it records
+`model_commit` in the review report; the report domain reads the model's TMDL at that sha (using
+Microsoft's own PBIP/TMDL guidance — nothing new to learn) and binds only to visible objects.
+`scripts/check-report-bindings.py <Report>.Report <Model>.SemanticModel --at <sha>` is the test at
+that boundary; the post-edit hook runs it on every report JSON change and CI runs it on every PR.
+If the model is re-reviewed at a new commit, the check is re-run and the report review reopens if
+anything broke. Agents talk through files in the client repo, never through each other's context. A lifecycle orchestrator above both is deferred until a third
 domain (e.g. ingestion) exists.
 
 ## Precedence
@@ -50,12 +51,10 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | `skills/fsm-modeling-standards/` | Firm | Star-schema rules, naming, folders, RLS, Direct Lake guardrails |
 | `skills/fsm-dax-standards/` | Firm | DAX style, variables, anti-patterns, perf checklist |
 | `skills/fsm-engagement-workflow/` | Firm | Discovery → spec → build → review → deploy → handover, with templates |
-| `skills/fsm-review/` | Firm | Review checklist and how to run BPA with the firm rule set |
-| `skills/fsm-deployment/` | Firm | Workspace promotion, deployment pipelines, git integration |
 | `skills/fsm-report-authoring/` | Firm | **Report entry point.** RP-* rules, firm theme, review checklist |
-| `scripts/gen-model-contract.py`, `scripts/check-report-contract.py` | Firm | Contract generation + boundary test |
+| `scripts/check-report-bindings.py` | Firm | Boundary test: report fields vs the model at the reviewed commit |
 | `rules/` | Firm | Machine-readable rules used by skills **and** CI (BPA, naming, precedence log) |
-| `agents/` | Firm | `modeler`, `reviewer`, `report-reviewer` (read-only), `deployer` (approval-gated) subagents |
+| `agents/` | Firm | `modeler`, `reviewer` + `report-reviewer` (read-only; review steps live here), `deployer` (gates + mechanisms live here) |
 | `hooks/` | Firm | Enforcement: protect `vendor/`, lint TMDL on edit, gate prod deploys |
 | `commands/` | Firm | `/new-engagement`, `/review-model`, `/build-report`, `/sync-upstream` |
 | `clients/` | Engagement | `_template/` is committed; real client folders are git-ignored (see below) |
@@ -72,7 +71,7 @@ cd fabric-semantic-model-agent
 /plugin install fabric-semantic-model-agent@fsm-marketplace
 ```
 
-The plugin registers the Power BI Modeling MCP server (`.mcp.json`). You also need Power BI
+The plugin manifest registers the Power BI Modeling MCP server (read-only on engagements, MS-00). You also need Power BI
 Desktop with PBIP/TMDL enabled, Azure CLI (`az login`) for Fabric REST calls, and Tabular Editor 2
 CLI on PATH for BPA runs.
 
@@ -84,8 +83,8 @@ CLI, so consultants forced onto Copilot at a client can use the same repo.
 ```text
 /new-engagement acme            # scaffolds clients/acme/ from clients/_template/
 /fsm-semantic-model build the Sales model from clients/acme/spec.md
-/review-model clients/acme/models/Sales.SemanticModel   # on pass → writes contracts/Sales.model-contract.yaml
-/build-report acme "Sales Performance"                    # requires the approved contract
+/review-model clients/acme/models/Sales.SemanticModel   # on pass → review report records model_commit
+/build-report acme "Sales Performance"                    # pins to that commit
 ```
 
 The orchestrator refuses to build before a spec is approved and refuses to deploy to a workspace
