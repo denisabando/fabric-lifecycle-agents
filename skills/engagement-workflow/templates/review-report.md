@@ -19,7 +19,7 @@ result: pass | fail
 Findings: (rule id · object · note)
 
 ## Firm checklist (standards/semantic-model.md)
-- [ ] MOD-01 star schema
+- [ ] Microsoft modeling-guidelines walked (star schema, hidden keys, relationships)
 - [ ] MOD-02 date table
 - [ ] MOD-03 measures table
 - [ ] ...

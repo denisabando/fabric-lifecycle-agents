@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.2] - 2026-09-02
+### Changed — standards are now the firm's delta on Microsoft
+- Removed every rule that merely repeated Microsoft's vendored guidance (star schema, hidden keys,
+  relationship direction, calc groups, display folders, technical prefixes, `VAR`, `DIVIDE`, DAX
+  anti-patterns, Copilot readiness, page archetypes, accessibility). The agent gets those from `vendor/`.
+- Fixed three unlogged conflicts by adopting Microsoft's position: count measures are `# Baskets` not
+  `Baskets #`; date table from source when available; `/` allowed inside iterators (DIVIDE BPA rule removed).
+- Overrides table moved from `standards/SKILL.md` into the top of each domain file; `SKILL.md` is now a
+  plain index. RPT-02 reclassified as an addition (Microsoft is silent on report measures); RPT-07
+  (readable PBIR names) logged as the override it always was.
+- Both standards files marked as drafts written to exercise the architecture.
+
 ## [0.4.1] - 2026-09-02
 ### Changed — fewer files
 - `skills/standards/` is now `SKILL.md` (index + overrides table), `semantic-model.md`, `report.md`,

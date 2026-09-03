@@ -2,7 +2,7 @@
   "name": "fabric-agents",
   "metadata": {
     "description": "Firm marketplace for Fabric lifecycle agents",
-    "version": "0.4.1"
+    "version": "0.4.2"
   },
   "owner": {
     "name": "BI Practice",
@@ -13,7 +13,7 @@
       "name": "fabric-lifecycle-agents",
       "source": "./",
       "description": "Semantic model + report agents for client Fabric engagements (Microsoft base + firm standards)",
-      "version": "0.4.1"
+      "version": "0.4.2"
     }
   ]
 }

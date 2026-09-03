@@ -12,7 +12,7 @@ storage_mode_rationale: 40M rows fits Import comfortably; daily refresh is suffi
 
 ## Tables
 | Table | Type | Grain | Source object | Notes |
-| Sales | fact | receipt line | sales.fact_sales_line | MOD-01 |
+| Sales | fact | receipt line | sales.fact_sales_line | star schema (Microsoft) |
 | Store | dim | store | sales.dim_store | region attribute for RLS |
 | Product | dim | product (SCD2) | sales.dim_product | |
 | Date | dim | day | generated | FY Jul–Jun (CO-02) |
@@ -27,7 +27,7 @@ storage_mode_rationale: 40M rows fits Import comfortably; daily refresh is suffi
 ## Measures
 | Name | Description | Intent | Format |
 | Net Sales (AUD) | Sales net of GST and returns | SUM of NetAmount | #,0 |
-| Baskets # | Number of distinct receipts | DISTINCTCOUNT ReceiptId | #,0 |
+| # Baskets | Number of distinct receipts | DISTINCTCOUNT ReceiptId | #,0 |
 | Avg Basket (AUD) | Net sales per basket | Net Sales / Baskets | #,0.00 |
 | Net Sales PY (AUD) | Net sales same period prior year | SAMEPERIODLASTYEAR (hand-written, CO-01) | #,0 |
 | Net Sales YoY % | Growth vs prior year | DIVIDE(delta, PY) | 0.0% |

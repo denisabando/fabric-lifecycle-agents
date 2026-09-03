@@ -16,7 +16,7 @@ kept beside the client artefacts here so the demo is self-contained.)
 Regional managers and the Acme BI lead. Weekly check-in, mobile-unfriendly is acceptable.
 
 ## Pages
-| Page | Archetype (RPT-05) | Questions answered |
+| Page | Archetype (Microsoft design skill) | Questions answered |
 | Sales Overview | Overview | Net sales this FY vs PY by month; which stores drive it; basket size |
 
 ## Visuals (all bound to visible objects at the pinned model commit, RPT-01)

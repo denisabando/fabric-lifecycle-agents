@@ -30,7 +30,7 @@ client override  >  firm standards  >  Microsoft skill  >  your own judgement
 | Layer | Load | Governs |
 | --- | --- | --- |
 | Client | `clients/<code>/overrides.md` | anything it explicitly states |
-| Firm | `skills/standards/semantic-model.md` (MOD-*, DAX-*); `skills/standards/SKILL.md § Overrides` for departures from Microsoft | naming, structure, DAX style, review gates |
+| Firm | `skills/standards/semantic-model.md` (MOD-*, DAX-*); its overrides table lists departures from Microsoft | naming, structure, DAX style, review gates |
 | Microsoft | `vendor/skills-for-fabric/plugins/powerbi-authoring/skills/semantic-model-authoring/SKILL.md` | tool routing (Modeling MCP → TMDL → REST), TMDL syntax, Direct Lake mechanics, deployment, refresh, permissions |
 
 Follow the Microsoft skill's workflow selector for *how* to perform an operation, **with one
@@ -39,7 +39,7 @@ standing override**: firm rule **MOD-00** replaces Microsoft's Tool Selection Pr
 and use the Modeling MCP read-only for inspection and validation against the PBIP folder. Apply firm and client rules to decide *what* to create.
 
 When a firm or client rule contradicts Microsoft guidance, the higher layer wins. Record the
-conflict in `skills/standards/SKILL.md § Overrides` (date, rule, which MS guidance it overrides, why) so it is
+conflict in the overrides table at the top of `skills/standards/semantic-model.md` (date, rule, which MS guidance it overrides, why) so it is
 reviewed on the next upstream sync. **Never edit anything under `vendor/`.**
 
 ## 3. Delegate to subagents where defined
@@ -77,6 +77,6 @@ Finish every task with a short block:
 Phase:        <discovery|spec|build|review|deploy|handover>
 Changed:      <files / objects>
 Rules applied: <firm/client rule ids that shaped decisions>
-Overrides:    <any Microsoft guidance overridden, with its standards/SKILL.md § Overrides entry>
+Overrides:    <any Microsoft guidance overridden, with its row in the domain standards file's overrides table>
 Next gate:    <what must happen before the next phase>
 ```

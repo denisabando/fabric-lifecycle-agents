@@ -11,7 +11,7 @@
   },
   {
     "ID": "MEASURE_DESCRIPTION",
-    "Name": "[DAX-04 / MOD-30] Measure has a description",
+    "Name": "[DAX-04] Measure has a description",
     "Category": "Firm standards",
     "Description": "Every measure needs a business-readable description (handover + AI readiness).",
     "Severity": 3,
@@ -27,16 +27,8 @@
     "Expression": "string.IsNullOrWhiteSpace(FormatString) and DataType <> DataType.String"
   },
   {
-    "ID": "DIVIDE",
-    "Name": "[DAX-10] Use DIVIDE instead of /",
-    "Category": "Firm standards",
-    "Severity": 2,
-    "Scope": "Measure",
-    "Expression": "RegEx.IsMatch(Expression, \"(?<!DIVIDE\\\\s*\\\\()[^\\\\n]*\\\\]\\\\s*/\\\\s*\")"
-  },
-  {
     "ID": "KEY_HIDDEN",
-    "Name": "[MOD-05] Key columns are hidden",
+    "Name": "[Microsoft modeling-guidelines] Key columns are hidden",
     "Category": "Firm standards",
     "Severity": 3,
     "Scope": "Column",
@@ -45,7 +37,7 @@
   },
   {
     "ID": "SOURCE_PREFIX",
-    "Name": "[naming] No source-system prefixes in object names",
+    "Name": "[Microsoft naming-conventions] No source-system prefixes in object names",
     "Category": "Firm standards",
     "Severity": 3,
     "Scope": "Table, Column, Measure",
@@ -61,7 +53,7 @@
   },
   {
     "ID": "CALC_COLUMN_ON_FACT",
-    "Name": "[DAX-23] No calculated columns on fact tables",
+    "Name": "[Microsoft dax-guidelines] No calculated columns on fact tables",
     "Category": "Firm standards",
     "Severity": 3,
     "Scope": "CalculatedColumn",

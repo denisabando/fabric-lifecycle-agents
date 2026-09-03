@@ -28,7 +28,7 @@ def main(path, rules_path):
     table = (tbl.group(1) or tbl.group(2)) if tbl else None
     fp = rules["tables"].get("forbidden_prefixes", [])
     if table and any(table.lower().startswith(p.lower()) for p in fp):
-        findings.append(f"{path}: table '{table}' has a forbidden source prefix (skills/standards/naming.yaml tables.forbidden_prefixes)")
+        findings.append(f"{path}: table '{table}' has a technical prefix (Microsoft naming-conventions; naming.yaml tables.forbidden_prefixes)")
     if table and table != rules["tables"]["measures_table"]:
         for m in re.finditer(r"^\s+measure\s+(?:'([^']+)'|([^=\s]+))\s*=", txt, re.M):
             findings.append(f"{path}: measure '{m.group(1) or m.group(2)}' defined on '{table}' — MOD-03: measures belong in {rules['tables']['measures_table']}")
@@ -42,7 +42,7 @@ def main(path, rules_path):
     for c in re.finditer(r"^\s+column\s+(?:'([^']+)'|(\S+)).*?(?=^\s+(?:measure|column|partition|hierarchy)\b|\Z)", txt, re.M | re.S):
         name, body = (c.group(1) or c.group(2)), c.group(0)
         if name.endswith(rules["columns"]["key_suffix"]) and rules["columns"].get("keys_hidden") and "isHidden" not in body:
-            findings.append(f"{path}: key column '{name}' is not hidden (MOD-05)")
+            findings.append(f"{path}: key column '{name}' is not hidden (Microsoft modeling-guidelines: hide key columns)")
         if any(name.lower().startswith(p.lower()) for p in rules["columns"].get("forbidden_prefixes", [])):
             findings.append(f"{path}: column '{name}' has a forbidden source prefix")
     for f in findings: print("[lint] " + f)

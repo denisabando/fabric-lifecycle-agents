@@ -1,122 +1,82 @@
 # Semantic model standards (MOD-*, DAX-*)
 
-Rule ids are cited by the reviewer, the linter and `bpa-rules.json`. Cite them in your output.
-Departures from Microsoft are listed in `SKILL.md § Overrides`.
+> **Draft.** Written to exercise the architecture, not agreed by the practice. Replace or extend before
+> real use. Everything here is the firm's *delta* on Microsoft's `semantic-model-authoring` skill:
+> Microsoft already covers star schema, hiding keys, relationship direction, calculation groups,
+> display folders, naming without technical prefixes, `VAR`, `DIVIDE`, DAX anti-patterns, performance
+> tuning and Copilot readiness. Those are **not repeated** — the agent gets them from `vendor/`.
+
+Rule ids are cited by the reviewer, the linter and `bpa-rules.json`.
+
+## Overrides of Microsoft guidance
+
+The only places where this file contradicts the vendored skill. The upstream-sync PR links here so each
+row is re-examined when Microsoft changes. Anything not in this table is additive.
+
+| Rule | Microsoft says (reference) | We do instead | Why |
+| ---- | -------------------------- | ------------- | --- |
+| **MOD-00** | `SKILL.md` § Tool Selection Priority — Tier 1 is live authoring through the Modeling MCP against Desktop, a workspace or a PBIP folder | TMDL/PBIP files in git are the only authoring path; MCP is read-only | every engagement change must be a reviewable, reproducible, attributable git diff |
+| **MOD-03** | `naming-conventions.md` puts measures on the table they aggregate, organised by display folder | all measures in one dedicated `_Measures` table | consistency across engagements; handover docs generated per table |
+| **MOD-21** | `naming-conventions.md` / `semantic-model-ai-readiness.md` treat OLS as a normal option | no OLS unless a client override asks for it | OLS breaks Copilot / Data Agent readiness |
 
 ## Rule zero — the diffable path
 
-- **MOD-00 TMDL/PBIP is the only authoring path. No live edits.** The model of record is the
-  PBIP project's `<Model>.SemanticModel/definition/*.tmdl` files in the client's git repo. Every
-  change to a model is a file edit followed by a commit. Concretely:
-  - **Never** author against a live model: not a running Power BI Desktop instance, not a
-    semantic model in a Fabric workspace, not through the service UI or web modelling.
-  - **Never** use the Power BI Modeling MCP for write operations (create / update / delete /
-    rename / apply). MCP may be used **read-only** — connected to the local PBIP folder — for
-    inspection, DAX validation and best-practice analysis.
-  - Changes reach a workspace only from committed TMDL: workspace git integration (branch sync)
-    or `updateDefinition` from the committed definition folder. Never edit in the service.
-  - If a model exists only as a `.pbix` or only in a workspace, the first step is to export it
-    to PBIP (Microsoft's *Export to PBIP* workflow), commit that baseline, and work from there.
-  - This **overrides Microsoft's Tool Selection Priority Tier 1** (MCP live authoring). Logged in
-    `SKILL.md § Overrides`. Reason: on an engagement every change must be reviewable as a diff,
-    reproducible from git, and attributable — a live edit is none of those.
+- **MOD-00 TMDL/PBIP is the only authoring path. No live edits.** The model of record is the PBIP
+  project's `<Model>.SemanticModel/definition/*.tmdl` in the client's git repo; every change is a
+  file edit followed by a commit.
+  - Never author against a live model: not Desktop, not a workspace, not the service UI.
+  - Never use the Power BI Modeling MCP for writes. Read-only use (inspect, validate DAX, analyse
+    best practices) against the local PBIP folder is fine.
+  - Changes reach a workspace only from committed TMDL: workspace git integration, or
+    `updateDefinition` from the committed definition folder.
+  - A model that exists only as `.pbix` or only in a workspace is first exported to PBIP
+    (Microsoft's *Export to PBIP* workflow) and committed as the baseline.
 
-## Structure
+## Structure (additions to Microsoft)
 
-- **MOD-01 Star schema, always.** One fact grain per fact table. Snowflakes only where a client
-  override permits. No fact-to-fact relationships; use a shared dimension or a bridge.
-- **MOD-02 One conformed Date table**, named `Date`, marked as date table, hidden `DateKey`,
-  fiscal columns driven by `engagement.yaml: fiscal_year_start_month`.
-- **MOD-03 Dedicated measures table** named `_Measures` (leading underscore sorts it first),
-  all columns hidden. Measures never live on fact tables.
-- **MOD-04 Relationships**: single-direction from dimension to fact by default. Bi-directional
-  only with a written justification in `spec.md`. Many-to-many only via bridge tables.
-- **MOD-05 Hide plumbing**: all key columns, all fact columns that have a measure, all
-  technical columns (`_LoadDate`, `_SourceSystem`) are hidden.
-- **MOD-06 Display folders** on every visible column and every measure. Folder names come from
-  the client glossary where one exists.
-- **MOD-07 Calculation groups** for time intelligence (`Time Calc`) and for unit/currency
-  switching. Not for anything a plain measure expresses. Skip entirely if the client override
-  says the client cannot maintain them.
+- **MOD-02 Date table** is named `Date`; fiscal columns are driven by
+  `engagement.yaml: fiscal_year_start_month`. Source preference follows Microsoft (use the
+  source's date table; generate only if none exists).
+- **MOD-03 Dedicated measures table** `_Measures` (leading underscore sorts it first), all columns
+  hidden. Measures never live on fact or dimension tables. *(override — see table above)*
+- **MOD-04 Bi-directional relationships** need a written justification in `spec.md`.
+- **MOD-07 Calculation groups** are skipped entirely when the client override says the client
+  cannot maintain them; time intelligence is then hand-written per measure.
 
-## Naming (enforced by `naming.yaml`)
+## Storage mode (process, not mechanics — mechanics are Microsoft's)
 
-- Tables: business names, singular, Title Case, spaces allowed (`Customer`, `Sales Order`).
-- Columns: Title Case with spaces; no prefixes; no source-system abbreviations.
-- Measures: Title Case; units in the name when ambiguous (`Revenue (USD)`, `Orders #`).
-- Keys: `<Entity>Key`, hidden.
-- No object name may contain the source table name (`dbo_`, `vw_`, `stg_`).
-
-## Storage mode
-
-- **MOD-10** Default to **Import** unless data volume, freshness or a Fabric-native source argues
-  otherwise; record the decision in `spec.md`.
-- **MOD-11 Direct Lake** only when the source is a Lakehouse/Warehouse in the same tenant and
-  the model needs no calculated columns / M transforms. Follow Microsoft's
-  `direct-lake-guidelines.md` for mechanics. Composite fallback behaviour must be explicit.
-- **MOD-12** DirectQuery requires a documented performance test in the review report.
+- **MOD-10** The storage-mode decision (Import / DirectQuery / Direct Lake / composite) and its
+  rationale are recorded in `spec.md` before build.
+- **MOD-12** DirectQuery or Direct Lake requires a documented performance test in the review report.
 
 ## Security
 
-- **MOD-20** RLS roles named `RLS - <Scope>`; filter expressions on dimensions, never on facts.
-- **MOD-21** OLS only via a client override — it breaks Copilot / Data Agent readiness.
-- **MOD-22** Test every role with `USERPRINCIPALNAME()` fixtures listed in `spec.md`.
+- **MOD-20** RLS roles are named `RLS - <Scope>`; filter expressions sit on dimensions, never facts.
+- **MOD-21** No OLS by default. *(override — see table above)*
+- **MOD-22** Every role has `USERPRINCIPALNAME()` test fixtures listed in `spec.md`, and the review
+  records the result.
 
-## AI readiness (Copilot / Data Agents)
+## DAX (additions to Microsoft's `dax-guidelines.md`)
 
-- **MOD-30** Every visible table, column and measure has a description. Synonyms on the top
-  20 business terms from the glossary. This is also what the handover pack is built from.
-
-For engine mechanics and optimisation patterns, load
-Microsoft's `dax-guidelines.md`, `dax-perf-decision-guide.md` and `dax-perf-patterns.md` from the
-vendored skill.
-
-## DAX style
-
-- **DAX-01** Format every measure with DAX Formatter conventions (one function per line, 4-space
-  indent, `VAR`/`RETURN` on their own lines).
-- **DAX-02** Fully qualify columns `'Table'[Column]`; never qualify measures `[Measure]`.
-- **DAX-03** Use `VAR` for any expression referenced twice or for readability; name variables
-  `_CamelCase` with a leading underscore.
-- **DAX-04** Every measure has a `formatString` and a `description` written for a business reader.
+- **DAX-04** Every measure has a `formatString` and a business-readable `description`. Microsoft
+  recommends this; here it is mandatory and the linter fails without it. The handover pack is
+  generated from the descriptions.
 - **DAX-05** Base measures first, then derived. Derived measures reference base measures, never
   re-aggregate columns.
+- **DAX-12** Flags return `1`/`0` or `TRUE()`/`FALSE()`, not strings.
+- **DAX-13** Selection-aware measures (`ISFILTERED` / `HASONEVALUE`) document the "no selection"
+  behaviour in the description.
+- **DAX-30 Performance evidence** attached to the review report: server timings for the five
+  heaviest measures on the largest visual in the spec, SE/FE split, and a `dax-perf-patterns` pass
+  for anything over 50 % formula engine. Diagnosis method is Microsoft's `dax-perf-decision-guide.md`.
 
-## DAX patterns
+## Appendix — RLS patterns
 
-- **DAX-10** Ratios: `DIVIDE ( num, den )` — never `/`.
-- **DAX-11** Time intelligence via the `Time Calc` calculation group (MOD-07). Do not hand-write
-  `YTD`/`PY` variants per measure unless the client override disables calc groups.
-- **DAX-12** Flags: return `1`/`0` or `TRUE()`/`FALSE()`, not strings.
-- **DAX-13** Selection-aware measures use `ISFILTERED`/`HASONEVALUE` guards, with a documented
-  behaviour for the "no selection" case.
+**A. Static role per scope.** Role `RLS - EMEA`: `'Region'[Region Code] = "EMEA"`.
 
-## DAX anti-patterns (review will fail)
+**B. Dynamic via security table.** Table `Security User Region` (UserPrincipalName, RegionKey),
+hidden, single-direction to `Region`, then `Region` → `Sales`. Role `RLS - Dynamic Region`:
 
-- **DAX-20** `FILTER ( 'Fact', ... )` over a whole fact table inside `CALCULATE` when a column
-  filter would do.
-- **DAX-21** Iterators (`SUMX` etc.) over fact tables when a column-level aggregate is equivalent.
-- **DAX-22** `CALCULATE` with `ALL('Fact')` as a shortcut — use `ALLSELECTED`/`REMOVEFILTERS` on
-  the intended dimension.
-- **DAX-23** Calculated columns on fact tables (push to source or M) — hard block in Direct Lake.
-- **DAX-24** `IF` chains longer than 3 branches — use `SWITCH ( TRUE (), ... )`.
-
-## DAX performance checklist (attach to the review report)
-
-1. Server timings for the 5 heaviest measures on the largest visual in the spec.
-2. Storage engine vs formula engine split; anything > 50 % FE gets a `dax-perf-patterns` pass.
-3. No `CallbackDataID` on hot measures.
-4. Cardinality of relationship columns reviewed; high-cardinality datetime keys replaced with
-   integer surrogate keys.
-
-## Appendix — RLS patterns (MOD-20..22)
-
-## Pattern A — static role per region
-Role `RLS - EMEA`: `'Region'[Region Code] = "EMEA"`
-
-## Pattern B — dynamic via security table
-Table `Security User Region` (UserPrincipalName, RegionKey), hidden, single-direction to `Region`,
-then `Region` → `Sales`. Role `RLS - Dynamic Region`:
 ```dax
 'Region'[RegionKey] IN
     CALCULATETABLE (
@@ -125,6 +85,5 @@ then `Region` → `Sales`. Role `RLS - Dynamic Region`:
     )
 ```
 
-## Pattern C — Direct Lake
-Same as B, but the security table must exist in the Lakehouse; RLS with Direct Lake falls back to
-DirectQuery for the filtered tables — say so in `spec.md` and test it (MOD-22).
+**C. Direct Lake.** As B, but the security table must exist in the Lakehouse; RLS on Direct Lake
+falls back to DirectQuery for the filtered tables — record that in `spec.md` and test it (MOD-22).

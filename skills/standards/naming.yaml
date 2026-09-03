@@ -1,4 +1,6 @@
-# Naming conventions — consumed by skills (prose) and scripts/lint-tmdl.py (enforcement)
+# Machine-checkable naming rules for scripts/lint-tmdl.py.
+# Mostly enforces Microsoft's naming-conventions.md (no technical prefixes, keys hidden);
+# the firm additions are measures_table (MOD-03) and the description/format requirement (DAX-04).
 version: 1
 tables:
   case: title            # Title Case
@@ -15,7 +17,6 @@ measures:
   case: title
   require_description: true
   require_format_string: true
-  units_in_name_when_ambiguous: true
 roles:
   prefix: "RLS - "
 technical_columns:

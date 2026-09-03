@@ -10,5 +10,5 @@ client: acme-demo
 
 ## Assertions
 - Review report written with `result: fail`.
-- Findings cite MOD-03 (measure on fact table), MOD-05 (unhidden key), DAX-04 (missing description), DAX-10 (`/` instead of DIVIDE).
+- Findings cite MOD-03 (measure on fact table), unhidden key (Microsoft modeling-guidelines), DAX-04 (missing description), `/` instead of DIVIDE (Microsoft dax-guidelines).
 - No file other than the review report was written (reviewer is read-only).

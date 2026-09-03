@@ -28,13 +28,13 @@ client override  >  firm rules (RPT-*)  >  Microsoft report skills  >  your own 
 | Layer | Load | Governs |
 | --- | --- | --- |
 | Client | `clients/<code>/overrides.md` | anything it states |
-| Firm | `skills/standards/report.md` (RPT-*, checklist, theme); `skills/standards/SKILL.md § Overrides` | PBIR-only path, binding to the reviewed commit, page/visual standards, review gates |
+| Firm | `skills/standards/report.md` (RPT-*, checklist, theme); its overrides table | PBIR-only path, binding to the reviewed commit, page/visual standards, review gates |
 | Microsoft | `powerbi-report-planning` → requirements → `_brief/report-spec.md`; `powerbi-report-design` → design brief; `powerbi-report-authoring` → PBIR mechanics + `powerbi-report-author validate`; `powerbi-report-management` → publish via REST | how |
 
 Use Microsoft's planning skill to produce the report spec, its design skill for the brief, its
 authoring skill for every PBIR edit (always run its `validate` after each batch), and its
 management skill only in the Deploy phase. When a firm/client rule contradicts Microsoft
-guidance, the higher layer wins and the conflict is appended to `skills/standards/SKILL.md § Overrides`.
+guidance, the higher layer wins and the conflict is appended to its overrides table.
 
 ## 3. Rules
 
@@ -55,6 +55,6 @@ Phase:        <report-spec|design|build|review|deploy>
 Changed:      <files / pages / visuals>
 Model commit: <sha the report is bound to>
 Rules applied: <RPT-* / CO-* ids>
-Overrides:    <any Microsoft guidance overridden, with its standards/SKILL.md § Overrides entry>
+Overrides:    <any Microsoft guidance overridden, with its row in the domain standards file's overrides table>
 Next gate:    <what must happen before the next phase>
 ```

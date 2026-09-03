@@ -9,13 +9,13 @@ table _Measures
 		displayFolder: Sales
 
 	/// Number of distinct receipts (baskets).
-	measure 'Baskets #' = DISTINCTCOUNT ( 'Sales'[ReceiptId] )
+	measure '# Baskets' = DISTINCTCOUNT ( 'Sales'[ReceiptId] )
 		formatString: #,0
 		displayFolder: Sales
 
 	/// Net sales per basket, in AUD.
 	measure 'Avg Basket (AUD)' =
-			DIVIDE ( [Net Sales (AUD)], [Baskets #] )
+			DIVIDE ( [Net Sales (AUD)], [# Baskets] )
 		formatString: #,0.00
 		displayFolder: Sales
 

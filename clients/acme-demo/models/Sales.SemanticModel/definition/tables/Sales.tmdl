@@ -1,4 +1,4 @@
-/// Sales fact — one row per receipt line. No measures here (MOD-03), no calculated columns (DAX-23).
+/// Sales fact — one row per receipt line. No measures here (MOD-03), no calculated columns (Microsoft dax-guidelines).
 table Sales
 	isHidden
 
