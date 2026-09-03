@@ -1,0 +1,74 @@
+OPEN QUESTIONS — production readiness
+Working notes, not a spec. Add / strike as they resolve. Date each entry.
+
+STATUS: architecture scaffold, v0.6.2. Never run end to end against real tools.
+
+--- MUST DO BEFORE FIRST REAL ENGAGEMENT ---------------------------------------
+[ ] 2026-09-02  Run it for real on a Windows machine with Power BI Desktop + Claude Code.
+                Install plugin, open acme-demo, exercise build/review/report. Expect a list.
+[ ] 2026-09-02  Validate bpa-rules.json loads in Tabular Editor; fix expressions.
+[ ] 2026-09-02  Run powerbi-report-author validate on the demo PBIR; open it in Desktop
+                (schema URLs / visual JSON unverified).
+[ ] 2026-09-02  Confirm hook event names + payload fields match Claude Code
+                (UserPromptSubmit, SubagentStart/Stop, Stop, stop_hook_active, transcript_path).
+[ ] 2026-09-02  Firm rules (§3–4 in both skills) are my drafts. Practice must review, keep, or cut.
+                Only MOD-00 came from a stated requirement.
+
+--- CLIENT REPO / ENVIRONMENTS ---------------------------------------------------
+[ ] 2026-09-02  clients/ is a stand-in. Define the real shape: client-owned repo, Fabric git
+                integration, branch -> workspace mapping, how a consultant onboards to it.
+[ ] 2026-09-02  FLA_CLIENT_ROOT is the seam. Decide: env var per consultant, or discover from cwd?
+[ ] 2026-09-02  Workspace/lakehouse IDs in M partitions are <placeholders>. Need per-env
+                substitution: Fabric variable library? deployment pipeline params? Decide.
+[ ] 2026-09-02  byPath -> byConnection switch for reports is described, not implemented.
+[ ] 2026-09-02  Where do review reports / decisions / audit live when the client owns the repo?
+                Assumed: in it. Confirm clients are OK with agent audit logs in their repo.
+
+--- AUTH / ACCESS ---------------------------------------------------------------
+[ ] 2026-09-02  How does a consultant authenticate to a client tenant? Guest account vs service
+                principal per client. Where do credentials live (never in repo)?
+[ ] 2026-09-02  Data source credentials / gateway binding after deploy — currently "instruct human".
+[ ] 2026-09-02  allow_data_reads is prose only (hook removed as brittle). Agent could query data.
+
+--- GATES / GOVERNANCE ----------------------------------------------------------
+[ ] 2026-09-02  Prod token (DEPLOY-PROD-<client>-<date>) is a speed bump. Replace with PR-based
+                gating on the client repo: required reviewers, branch protection, agent has no
+                prod credentials.
+[ ] 2026-09-02  Reviews are agent-written. Define human sign-off: who, recorded where.
+[ ] 2026-09-02  Multi-consultant: branching strategy, PR template, CODEOWNERS.
+
+--- PLATFORM ----------------------------------------------------------------------
+[ ] 2026-09-02  Tabular Editor 2 + Power BI Desktop + Modeling MCP are Windows-only. Mac
+                consultants cannot run BPA or validate DAX locally; hooks degrade to "skipped".
+                Options: Windows VM, BPA in CI, Fabric hosted modeling service.
+[ ] 2026-09-02  plugin.json hardcodes vendor paths. Upstream rename would break silently.
+
+--- BROWNFIELD ------------------------------------------------------------------
+[ ] 2026-09-02  Most engagements inherit .pbix or live workspace models. No workflow for:
+                export to PBIP, baseline commit, phased adoption of rules without failing all.
+[ ] 2026-09-02  Existing reports have hex visual names; RPT-07 would flag every one.
+
+--- CORRECTNESS / OPS -----------------------------------------------------------
+[ ] 2026-09-02  Nothing checks numbers: no measure reconciliation vs source, no DAX unit tests,
+                no post-deploy refresh verification.
+[ ] 2026-09-02  DAX-30 asks for server timings; nothing collects them.
+[ ] 2026-09-02  Handover pack "generated from TMDL" — no script exists.
+[ ] 2026-09-02  Eval scenario grader unwired (evals/run.sh runs prompts, judges nothing).
+[ ] 2026-09-02  Firm-wide telemetry (OTEL export) not configured. Per-client audit only.
+[ ] 2026-09-02  Audit log retention / client contract terms.
+
+--- DECIDED (keep for the record) ------------------------------------------------
+[x] 2026-09-02  TMDL/PBIP only, no live edits; MCP read-only (MOD-00).
+[x] 2026-09-02  Overrides + additions live in skills/<domain>/SKILL.md §3–4; no standards folder.
+[x] 2026-09-02  No model-contract file; report pins the model_commit from a passing review.
+[x] 2026-09-02  Firm layer is the DELTA on Microsoft; nothing Microsoft says is repeated.
+[x] 2026-09-02  Audit: hooks write audit/<date>.jsonl (mechanical); agent writes
+                decisions/<skill>/ (narrative); both in client root; audit/ hook-protected.
+[x] 2026-09-02  One firm repo (monorepo of domains); client content in client's own repo.
+[x] 2026-09-02  Rule ids MOD-/DAX-/RPT-; -00 is always "diffable path".
+
+--- QUESTIONS FOR THE TEAM ------------------------------------------------------
+?   Who has a Windows box + Desktop to run the first real pass?
+?   Do we want firm standards at all beyond MOD-00, or start with only Microsoft + client overrides?
+?   Appetite for a third domain (ingestion) before the first two have shipped?
+?   Which clients would accept agent audit logs committed to their repo?
