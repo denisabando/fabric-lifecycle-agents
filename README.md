@@ -89,6 +89,9 @@ CLI on PATH for BPA runs.
 The same layout (skills + commands + agents + hooks + plugin manifest) installs in GitHub Copilot
 CLI, so consultants forced onto Copilot at a client can use the same repo.
 
+First time on a machine? Follow `docs/first-run-windows.md` — it is the ordered checklist for the
+Windows box and the test tenant.
+
 ## Use on an engagement
 
 ```text
@@ -116,6 +119,13 @@ Two trails, produced differently, both in the client folder so they travel with 
   changed, rules and overrides applied, questions asked and answered, interventions, next gate. The Stop
   hook refuses to end a turn that changed models without one. Commit trailers `Decision:` and
   `Agent-Session:` tie the commit to both trails.
+
+- **Tokens and cost.** `hooks/usage.js` runs on turn end, reads the session transcript Claude Code names in
+  the Stop payload, sums per-message token usage by model, and appends one `Usage` line per turn: turn
+  tokens and cost, session cumulative, and the `checked` date of `hooks/pricing.yaml` so a stale price
+  table is visible. Estimates; the main session only (subagent transcripts are separate — see
+  OPEN-QUESTIONS). `scripts/usage-report.js <client-root> --by session|day|model|skill` aggregates it;
+  `--by skill` joins sessions to decision records for cost per task.
 
 - **Tokens and cost.** `hooks/usage.js` runs on turn end, reads the session transcript Claude Code names in
   the Stop payload, sums per-message token usage by model, and appends one `Usage` line per turn: turn

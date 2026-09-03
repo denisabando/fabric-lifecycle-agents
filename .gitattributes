@@ -1,0 +1,10 @@
+# Keep line endings consistent across Windows and macOS (TMDL/JSON diffs stay clean)
+* text=auto
+*.tmdl text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.pdf binary
+*.xlsx binary

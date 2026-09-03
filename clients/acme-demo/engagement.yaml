@@ -1,3 +1,4 @@
+# Demo engagement — ALSO the first-run test client. Fill the <...> placeholders for your test tenant.
 client: acme-demo
 client_name: Acme Retail (demo)
 consultant: Denis
@@ -5,17 +6,17 @@ fiscal_year_start_month: 7
 default_storage_mode: Import
 calc_groups_allowed: false            # see CO-01
 allow_data_reads: false
-tenant: acme-demo.example.com
+tenant: <your-test-tenant>.onmicrosoft.com      # <-- FILL: Entra tenant domain used by `az login`
 environments:
   - name: dev
-    workspace: "Acme BI - Dev"
+    workspace: "<your Fabric workspace name>"   # <-- FILL: the F2 workspace; connect it to this repo's clients/acme-demo/models on main
   - name: test
-    workspace: "Acme BI - Test"
+    workspace: "Acme BI - Test"                 # does not need to exist for the first run
   - name: prod
-    workspace: "Acme BI"
+    workspace: "Acme BI"                        # does not need to exist; prod gate is exercised by refusing
     prod: true
 deployment:
-  method: git_integration
+  method: git_integration             # first run: Fabric workspace <-> GitHub git integration on clients/acme-demo/models
   refresh_after_deploy: true
 audit:
   include_reads: false            # log Read/Glob/Grep tool calls too (noisy)

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.8.1] - 2026-09-03
+### Added
+- `docs/first-run-windows.md` ordered checklist; `.gitattributes`; `clients/acme-demo/models/Sales.pbip`
+  so Desktop can open the demo; engagement.yaml placeholders for the test tenant.
+
 ## [0.8.0] - 2026-09-02
 ### Changed — Node everywhere (Windows-ready)
 - All hooks and scripts rewritten in JavaScript for Node.js, which Claude Code already requires.
@@ -7,6 +12,13 @@
   resolver, YAML-lite reader, audit append, PATH lookup that works on Windows).
 - Path matching normalises backslashes; PowerShell write verbs (`Set-Content`, `Out-File`, `del`,
   `move`) are covered by the audit/vendor guards. `evals/run.js` replaces `run.sh`.
+
+## [0.7.0] - 2026-09-02
+### Added — tokens and cost in the audit trail
+- `hooks/usage.js` (Stop): per-turn and per-session token counts by model from the transcript, priced
+  with `hooks/pricing.yaml` (dated; estimates). One `Usage` event per turn in `audit/<date>.jsonl`.
+- `scripts/usage-report.js`: aggregate by session / day / model / skill (joins decision records).
+- `audit/state/` holds per-session counters (git-ignored).
 
 ## [0.7.0] - 2026-09-02
 ### Added — tokens and cost in the audit trail
