@@ -89,7 +89,7 @@ CLI on PATH for BPA runs.
 The same layout (skills + commands + agents + hooks + plugin manifest) installs in GitHub Copilot
 CLI, so consultants forced onto Copilot at a client can use the same repo.
 
-First time on a machine? Follow `docs/first-run-windows.md` — it is the ordered checklist for the
+First time on a machine? Run `node scripts/doctor.js`, then follow `docs/first-run-windows.md` — it is the ordered checklist for the
 Windows box and the test tenant.
 
 ## Use on an engagement

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.9.1] - 2026-09-03
+### Added
+- `scripts/doctor.js`: prerequisite check (git, Node, Claude Code, submodule, evals, az + login, gh + login,
+  Desktop, Tabular Editor, powerbi-report-author, engagement.yaml placeholders). Step 2 of the first-run doc.
+
 ## [0.9.0] - 2026-09-03
 ### Added — git workflow
 - One branch per environment (`environments[].branch`) and a `git:` block in `engagement.yaml`.

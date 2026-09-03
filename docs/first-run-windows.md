@@ -29,8 +29,11 @@ No Python, no bash.
 ```powershell
 git clone --recurse-submodules <repo-url> fabric-lifecycle-agents
 cd fabric-lifecycle-agents
-node evals/run.js                      # static evals must pass here before anything else
+node scripts/doctor.js                 # one line per prerequisite: PASS / FAIL / warn, with the fix
 ```
+
+`doctor.js` also runs the static evals. Repeat it after each install until every required item passes;
+the table in step 1 is what it checks.
 
 If `vendor/skills-for-fabric` is empty you cloned without `--recurse-submodules`: `git submodule update --init`.
 
