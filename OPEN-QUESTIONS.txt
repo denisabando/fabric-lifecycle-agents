@@ -55,6 +55,10 @@ STATUS: architecture scaffold, v0.6.2. Never run end to end against real tools.
 [ ] 2026-09-02  Handover pack "generated from TMDL" — no script exists.
 [ ] 2026-09-02  Eval scenario grader unwired (evals/run.sh runs prompts, judges nothing).
 [ ] 2026-09-02  Firm-wide telemetry (OTEL export) not configured. Per-client audit only.
+[ ] 2026-09-02  Token/cost trail reads the MAIN session transcript only; subagent (modeler,
+                reviewer, deployer) transcripts are separate files and are not counted yet.
+                Confirm transcript JSONL shape (type=assistant, message.usage, message.id) on a real run.
+[ ] 2026-09-02  hooks/pricing.yaml must be maintained by hand; costs are estimates. Decide owner.
 [ ] 2026-09-02  Audit log retention / client contract terms.
 
 --- DECIDED (keep for the record) ------------------------------------------------

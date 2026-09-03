@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0] - 2026-09-02
+### Added — tokens and cost in the audit trail
+- `hooks/usage.sh` (Stop): per-turn and per-session token counts by model from the transcript, priced
+  with `hooks/pricing.yaml` (dated; estimates). One `Usage` event per turn in `audit/<date>.jsonl`.
+- `scripts/usage-report.py`: aggregate by session / day / model / skill (joins decision records).
+- `audit/state/` holds per-session counters (git-ignored).
+
 ## [0.6.2] - 2026-09-02
 ### Changed
 - Decision records live in `decisions/<skill>/` (one subfolder per domain skill, mirroring `skills/`).

@@ -112,6 +112,13 @@ Two trails, produced differently, both in the client folder so they travel with 
   hook refuses to end a turn that changed models without one. Commit trailers `Decision:` and
   `Agent-Session:` tie the commit to both trails.
 
+- **Tokens and cost.** `hooks/usage.sh` runs on turn end, reads the session transcript Claude Code names in
+  the Stop payload, sums per-message token usage by model, and appends one `Usage` line per turn: turn
+  tokens and cost, session cumulative, and the `checked` date of `hooks/pricing.yaml` so a stale price
+  table is visible. Estimates; the main session only (subagent transcripts are separate — see
+  OPEN-QUESTIONS). `scripts/usage-report.py <client-root> --by session|day|model|skill` aggregates it;
+  `--by skill` joins sessions to decision records for cost per task.
+
 Human approvals (spec sign-off, review verdict, prod confirmation) stay in their artefacts and, on a
 real engagement, in the pull request. `scripts/client-root.sh` is the one place that resolves where the
 client folder is — set `FLA_CLIENT_ROOT` when the client content moves to its own repo.

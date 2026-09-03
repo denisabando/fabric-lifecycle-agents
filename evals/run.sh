@@ -38,6 +38,21 @@ N="$(cat "$TMPC"/audit/*.jsonl | wc -l | tr -d ' ')"
 [ "$N" = "2" ] && echo "audit: 2 lines (Edit logged, Read skipped, audit write blocked+logged)" || { echo "audit: expected 2 lines, got $N"; fail=1; }
 rm -rf "$TMPC"
 
+echo "== static: usage hook smoke test (synthetic transcript)"
+TMPC="$(mktemp -d)"; cp "$ROOT/clients/acme-demo/engagement.yaml" "$TMPC/"; TR="$TMPC/transcript.jsonl"
+printf '%s\n' '{"type":"user","message":{"role":"user","content":"hi"}}' \
+  '{"type":"assistant","message":{"id":"m1","model":"claude-fable-5-1","usage":{"input_tokens":1000,"output_tokens":200,"cache_creation_input_tokens":0,"cache_read_input_tokens":0}}}' \
+  '{"type":"assistant","message":{"id":"m1","model":"claude-fable-5-1","usage":{"input_tokens":1000,"output_tokens":200,"cache_creation_input_tokens":0,"cache_read_input_tokens":0}}}' \
+  '{"type":"assistant","message":{"id":"m2","model":"claude-fable-5-1","usage":{"input_tokens":500,"output_tokens":100,"cache_creation_input_tokens":2000,"cache_read_input_tokens":4000}}}' > "$TR"
+echo '{"session_id":"u1","transcript_path":"'"$TR"'"}' | FLA_CLIENT_ROOT="$TMPC" bash "$ROOT/hooks/usage.sh"
+echo '{"session_id":"u1","transcript_path":"'"$TR"'"}' | FLA_CLIENT_ROOT="$TMPC" bash "$ROOT/hooks/usage.sh"   # no new tokens → no new line
+U="$(grep -c '"event": "Usage"' "$TMPC"/audit/*.jsonl)"
+COST="$(grep '"event": "Usage"' "$TMPC"/audit/*.jsonl | python3 -c 'import sys,json; print(json.loads(sys.stdin.readline())["turn_cost_usd"])')"
+# 1500 in @10 + 300 out @50 + 2000 cw @12.5 + 4000 cr @0.25 = 0.015+0.015+0.025+0.001 = 0.056
+[ "$U" = "1" ] && [ "$COST" = "0.056" ] && echo "usage: 1 line, dedup ok, cost 0.056 ok" || { echo "usage: got $U line(s), cost $COST (want 1, 0.056)"; fail=1; }
+python3 "$ROOT/scripts/usage-report.py" "$TMPC" --by model | tail -3
+rm -rf "$TMPC"
+
 echo "== scenarios"
 if command -v claude >/dev/null 2>&1 && [ -n "${ANTHROPIC_API_KEY:-}" ]; then
   mkdir -p "$ROOT/evals/out"
