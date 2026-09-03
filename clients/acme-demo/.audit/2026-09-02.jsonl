@@ -1,0 +1,6 @@
+{"ts": "2026-09-02T21:04:11+00:00", "event": "UserPromptSubmit", "session": "3f1c\u2026demo", "cwd": "\u2026/clients/acme-demo", "prompt": "Add a year-over-year growth measure for net sales."}
+{"ts": "2026-09-02T21:04:19+00:00", "event": "Blocked", "session": "3f1c\u2026demo", "tool": "mcp__powerbi-modeling-mcp__measure_create", "mcp_args": "{\"table\": \"_Measures\", \"name\": \"Net Sales YoY %\"}", "reason": "BLOCKED (MOD-00): 'mcp__powerbi-modeling-mcp__measure_create' would write to a live model\u2026"}
+{"ts": "2026-09-02T21:04:31+00:00", "event": "PreToolUse", "session": "3f1c\u2026demo", "tool": "Edit", "path": "models/Sales.SemanticModel/definition/tables/_Measures.tmdl"}
+{"ts": "2026-09-02T21:04:32+00:00", "event": "PostToolUse", "session": "3f1c\u2026demo", "tool": "Edit", "path": "models/Sales.SemanticModel/definition/tables/_Measures.tmdl", "sha256": "9b1f0c2a7e4d5f60", "result": "ok"}
+{"ts": "2026-09-02T21:04:58+00:00", "event": "PreToolUse", "session": "3f1c\u2026demo", "tool": "Bash", "command": "git commit -am 'model(Sales): add Net Sales PY, YoY %' -m 'Decision: decisions/2026-09-02-net-sales-yoy.md' -m 'Agent-Session: 3f1c\u2026demo'"}
+{"ts": "2026-09-02T21:05:02+00:00", "event": "Stop", "session": "3f1c\u2026demo", "transcript": "~/.claude/projects/\u2026/3f1c\u2026.jsonl", "uncommitted_changes": 0}

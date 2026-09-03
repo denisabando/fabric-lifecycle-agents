@@ -5,28 +5,35 @@ set -euo pipefail
 INPUT="$(cat)"
 TOOL="$(printf '%s' "$INPUT" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("tool_name",""))')"
 ARGS="$(printf '%s' "$INPUT" | python3 -c 'import sys,json; print(json.dumps(json.load(sys.stdin).get("tool_input",{})))')"
+HERE="$(cd "$(dirname "$0")" && pwd)"
+block() {  # record the block in the audit trail, then refuse
+  printf '%s' "$INPUT" | python3 -c 'import sys,json; d=json.load(sys.stdin); d["reason"]=sys.argv[1]; print(json.dumps(d))' "$1" | bash "$HERE/audit.sh" Blocked
+  echo "$1" >&2; exit 2
+}
+
+# 00. the audit trail is append-only and not the agent's to edit
+if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*/\.audit/' || \
+   { [ "$TOOL" = "Bash" ] && printf '%s' "$ARGS" | grep -Eq '\.audit/[^"]*(>|>>|rm |mv |sed -i|tee|truncate)|(>|>>|rm |mv |sed -i|tee|truncate)[^"]*\.audit/'; }; then
+  block "BLOCKED: .audit/ is the append-only audit trail; only hooks write there."
+fi
 
 # 0. MOD-00 — no live edits: Modeling MCP is read-only; writes go to TMDL files
 if printf '%s' "$TOOL" | grep -Eq '^mcp__powerbi-modeling-mcp__' && \
    ! printf '%s' "$TOOL" | grep -Eiq '(list|get|read|query|validate|analy|export|serialize|describe|connect|status|info)'; then
-  echo "BLOCKED (MOD-00): '$TOOL' would write to a live model. Edit the TMDL files in the PBIP definition folder and commit instead; MCP is read-only on engagements." >&2
-  exit 2
+  block "BLOCKED (MOD-00): '$TOOL' would write to a live model. Edit the TMDL files in the PBIP definition folder and commit instead; MCP is read-only on engagements."
 fi
 
 # 0b. RPT-00 — reports are PBIR in git: never write .pbix, never commit localSettings
 if printf '%s' "$ARGS" | grep -Eiq '"(file_path|path)"\s*:\s*"[^"]*\.(pbix|pbit)"|\.pbi/localSettings\.json'; then
-  echo "BLOCKED (RPT-00): reports are authored as PBIR files in git; .pbix/.pbit and localSettings.json are never written or committed." >&2
-  exit 2
+  block "BLOCKED (RPT-00): reports are authored as PBIR files in git; .pbix/.pbit and localSettings.json are never written or committed."
 fi
 
 # 1. vendor/ is read-only
 if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*vendor/'; then
-  echo "BLOCKED: vendor/ is Microsoft's skill, pinned and read-only. Put firm changes in skills/<domain>/SKILL.md and log overrides in its §3 table." >&2
-  exit 2
+  block "BLOCKED: vendor/ is Microsoft's skill, pinned and read-only. Put firm changes in skills/<domain>/SKILL.md and log overrides in its §3 table."
 fi
 if [ "$TOOL" = "Bash" ] && printf '%s' "$ARGS" | grep -Eq '(>|>>|sed -i|tee|rm |mv |cp )[^"]*vendor/'; then
-  echo "BLOCKED: shell write into vendor/ (read-only submodule)." >&2
-  exit 2
+  block "BLOCKED: shell write into vendor/ (read-only submodule)."
 fi
 
 # 2. prod deployments need a confirmation token in the command/args

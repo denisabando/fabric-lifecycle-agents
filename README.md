@@ -61,7 +61,7 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | `skills/report/` | Firm | **Report domain, one file.** Same six sections; `theme.json` beside it |
 | `skills/engagement-workflow/` | Firm | Phases, gates and templates shared by every domain |
 | `agents/` | Firm | `modeler`, `reviewer` + `report-reviewer` (read-only; review steps live here), `deployer` (gates + mechanisms live here) |
-| `hooks/` | Firm | Enforcement: protect `vendor/`, lint TMDL on edit, gate prod deploys |
+| `hooks/` | Firm | Enforcement (protect `vendor/`, lint on edit, gate prod deploys) and the mechanical audit trail (`audit.sh`, `stop-check.sh`) |
 | `commands/` | Firm | `/new-engagement`, `/review`, `/sync-upstream` |
 | `clients/` | Engagement | `_template/` is committed; real client folders are git-ignored (see below) |
 | `evals/` | Firm | Scenario evals + fixture PBIP models run on every PR |
@@ -96,6 +96,25 @@ CLI, so consultants forced onto Copilot at a client can use the same repo.
 
 The orchestrator refuses to build before a spec is approved and refuses to deploy to a workspace
 tagged `prod` in `engagement.yaml` without an explicit human confirmation.
+
+## Audit trail
+
+Two trails, produced differently, both in the client folder so they travel with the client's repo:
+
+- **Mechanical — what happened.** `hooks/audit.sh` runs on every prompt, tool call, subagent start/stop,
+  hook block and turn end, appending one JSON line to `<client-root>/.audit/<date>.jsonl`. Metadata only
+  (event, tool, path, truncated command, block reason, file fingerprint) — never file contents or query
+  results. Read-only tools are skipped unless `engagement.yaml: audit.include_reads: true`. The agent
+  cannot edit `.audit/` (hook-blocked). Roughly a few hundred lines per busy day.
+- **Narrative — why.** Every task that changes `models/` ends with a decision record in
+  `<client-root>/decisions/` (template: `skills/engagement-workflow/templates/decision.md`): request, what
+  changed, rules and overrides applied, questions asked and answered, interventions, next gate. The Stop
+  hook refuses to end a turn that changed models without one. Commit trailers `Decision:` and
+  `Agent-Session:` tie the commit to both trails.
+
+Human approvals (spec sign-off, review verdict, prod confirmation) stay in their artefacts and, on a
+real engagement, in the pull request. `scripts/client-root.sh` is the one place that resolves where the
+client folder is — set `FLA_CLIENT_ROOT` when the client content moves to its own repo.
 
 ## Keeping the Microsoft base current
 

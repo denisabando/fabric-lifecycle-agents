@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.0] - 2026-09-02
+### Added — audit trail
+- `hooks/audit.sh` on UserPromptSubmit / PreToolUse / PostToolUse / SubagentStart / SubagentStop / Stop
+  and on every hook block: one JSON line per event in `<client-root>/.audit/<date>.jsonl`, metadata only.
+- `hooks/stop-check.sh`: a turn that changed `models/` must leave a decision record in `decisions/`.
+- `skills/engagement-workflow/templates/decision.md`; §6 of both domain skills now writes it.
+- `scripts/client-root.sh`: single resolver for the client folder (`FLA_CLIENT_ROOT` → nearest
+  `engagement.yaml` → sole non-template `clients/*`). The seam for moving client content to its own repo.
+- `.audit/` is hook-protected; `engagement.yaml: audit:` settings; demo decision record + audit day.
+
 ## [0.5.0] - 2026-09-02
 ### Changed — one file per domain
 - `skills/standards/` removed. Each domain's rules now live inside its own orchestrator,

@@ -116,7 +116,16 @@ track re-runs `scripts/check-report-bindings.py --at <new sha>` once a new revie
 the report domain needs arrive as `clients/<code>/<Model>.model-change-requests.md` — spec revisions,
 not ad-hoc additions.
 
-## 6. Output block
+## 6. Output block → decision record
+
+Finish every task with the block below **and** write it into
+`<client-root>/decisions/<yyyy-mm-dd>-<slug>.md` using
+`skills/engagement-workflow/templates/decision.md` — request, what changed, why (rules, overrides),
+questions asked and answered, interventions (hook blocks, corrections), next gate. The Stop hook
+refuses to finish a turn that changed `models/` without one. Commit it with the change; the commit
+message carries `Decision: decisions/<file>` and `Agent-Session: <id>` trailers. The mechanical
+record of what happened (every prompt, tool call and block) is written by hooks to
+`<client-root>/.audit/` — you never write there.
 
 ```
 Phase:         <discovery|spec|build|review|deploy|handover>

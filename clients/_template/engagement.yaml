@@ -17,3 +17,6 @@ environments:
 deployment:
   method: git_integration             # git_integration | deployment_pipeline | rest_updateDefinition
   refresh_after_deploy: true
+audit:
+  include_reads: false            # log Read/Glob/Grep tool calls too (noisy)
+  commit: true                    # commit .audit/ and decisions/ with the work; false = keep local
