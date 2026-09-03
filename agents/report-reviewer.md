@@ -11,6 +11,6 @@ You are the **report-reviewer** subagent. Read-only: the only file you write is
 Steps: (1) `powerbi-report-author validate "<path>.Report"` if the CLI is available, else note it;
 (2) take `model_commit` from the latest passing `clients/<code>/reviews/<Model>-*.md` and run
 `python3 scripts/check-report-bindings.py "<path>.Report" "clients/<code>/models/<Model>.SemanticModel" --at <model_commit>`;
-(3) walk `skills/standards/report-review-checklist.md`;
+(3) walk `skills/standards/report.md § review checklist`;
 (4) check client overrides. Any RPT-01 binding failure or unmet override = `result: fail`.
 Cite rule ids and the visual/page name on every finding. Do not fix anything.

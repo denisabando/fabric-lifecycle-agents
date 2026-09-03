@@ -10,7 +10,7 @@ and adds a firm-owned layer of standards, an engagement workflow, review gates a
 overrides — **without ever editing Microsoft's files**.
 
 > **Design principle: layer, don't fork.**
-> `vendor/` is read-only. Everything the firm owns lives beside it under `skills/standards`, `rules/`,
+> `vendor/` is read-only. Everything the firm owns lives beside it under `skills/`,
 > `agents/`, `hooks/` and `commands/`, and the orchestrator skill says how the layers combine.
 
 ## Two domains, one handoff
@@ -40,8 +40,8 @@ Firm skills say **what good looks like** (naming, structure, DAX style, review g
 Client overrides adjust both for one engagement.
 
 Three layers, three places, and "overrides" means the same thing at each: Microsoft's skills in
-`vendor/`; the firm's standards in `skills/standards/` with every departure from Microsoft listed in
-`skills/standards/overrides.md`; the client's exceptions in `clients/<code>/overrides.md`.
+`vendor/`; the firm's standards in `skills/standards/` with every departure from Microsoft listed on
+its index page (`skills/standards/SKILL.md`); the client's exceptions in `clients/<code>/overrides.md`.
 
 **Rule zero (MOD-00): TMDL/PBIP is the only authoring path — no live edits.** The model of record
 is the TMDL in the client's git repo; every change is a diff. Microsoft's skill prefers live
@@ -54,12 +54,11 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | `vendor/skills-for-fabric/` | Microsoft | Git submodule, pinned SHA, **never edited** |
 | `skills/semantic-model/` | Firm | **Model domain entry point** (orchestrator only — no rules of its own) |
 | `skills/report/` | Firm | **Report domain entry point** (orchestrator only) |
-| `skills/standards/` | Firm | **All firm rules in one place**: `modeling.md` (MOD-*), `dax.md` (DAX-*), `report.md` (RPT-*), and `overrides.md` — the single list of departures from Microsoft |
+| `skills/standards/` | Firm | **Everything the firm says, three files + two rule files**: `SKILL.md` (index + the overrides-of-Microsoft table), `semantic-model.md` (MOD-*, DAX-*), `report.md` (RPT-*), `naming.yaml`, `bpa-rules.json` |
 | `skills/engagement-workflow/` | Firm | Phases, gates and templates shared by every domain |
-| `rules/` | Firm | Machine-checkable subset of the standards (naming.yaml, bpa-rules.json) used by hooks and CI |
 | `agents/` | Firm | `modeler`, `reviewer` + `report-reviewer` (read-only; review steps live here), `deployer` (gates + mechanisms live here) |
 | `hooks/` | Firm | Enforcement: protect `vendor/`, lint TMDL on edit, gate prod deploys |
-| `commands/` | Firm | `/new-engagement`, `/review-model`, `/build-report`, `/sync-upstream` |
+| `commands/` | Firm | `/new-engagement`, `/review`, `/sync-upstream` |
 | `clients/` | Engagement | `_template/` is committed; real client folders are git-ignored (see below) |
 | `evals/` | Firm | Scenario evals + fixture PBIP models run on every PR |
 | `.github/workflows/` | Firm | Weekly upstream sync, evals on PR, release on tag |
@@ -86,8 +85,9 @@ CLI, so consultants forced onto Copilot at a client can use the same repo.
 ```text
 /new-engagement acme            # scaffolds clients/acme/ from clients/_template/
 /semantic-model build the Sales model from clients/acme/spec.md
-/review-model clients/acme/models/Sales.SemanticModel   # on pass → review report records model_commit
-/build-report acme "Sales Performance"                    # pins to that commit
+/review clients/acme/models/Sales.SemanticModel        # on pass → review report records model_commit
+/report build "Sales Performance" for acme               # pins to that commit
+/review "clients/acme/models/Sales Performance.Report"
 ```
 
 The orchestrator refuses to build before a spec is approved and refuses to deploy to a workspace
@@ -118,6 +118,6 @@ pinned SHA and the evals are the mitigation, not optional extras.
 
 1. `skills/<domain>/SKILL.md` — an orchestrator only: context, layer order, subagents, output block.
 2. `skills/standards/<domain>.md` — its rules with a new id prefix; `-00` is "diffable path, no live edits".
-3. Rows in `skills/standards/overrides.md` for anything that contradicts the vendored Microsoft skill.
+3. Rows in the overrides table on `skills/standards/SKILL.md` for anything that contradicts the vendored Microsoft skill.
 4. Register the Microsoft skills it uses in `.claude-plugin/plugin.json` (they are already in `vendor/`).
 5. A reviewer subagent, a hook rule if something must be enforced, fixtures + evals.

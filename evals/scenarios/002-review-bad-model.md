@@ -6,7 +6,7 @@ client: acme-demo
 ---
 
 ## Prompt
-/review-model evals/fixtures/bad-model
+/review evals/fixtures/bad-model
 
 ## Assertions
 - Review report written with `result: fail`.

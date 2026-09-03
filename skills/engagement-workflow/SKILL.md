@@ -48,7 +48,7 @@ scope, and the top 20 glossary terms for synonyms. The spec is the contract — 
 commit). The post-edit hook lints TMDL and runs BPA after every `.tmdl` change; fix findings
 before moving on.
 
-**Review.** `reviewer` is read-only. It runs Tabular Editor BPA with `rules/bpa-rules.json`,
+**Review.** `reviewer` is read-only. It runs Tabular Editor BPA with `skills/standards/bpa-rules.json`,
 walks the firm checklist, runs the DAX performance checklist, and writes the report with the
 `model_commit` it reviewed — that sha is the handoff to the report track.
 Findings go back to Build.

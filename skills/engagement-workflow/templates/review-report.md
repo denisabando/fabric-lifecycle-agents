@@ -9,7 +9,7 @@ result: pass | fail
 
 # Review — <Model>
 
-## BPA (rules/bpa-rules.json)
+## BPA (skills/standards/bpa-rules.json)
 | Severity | Count |
 | -------- | ----- |
 | Error | |
@@ -18,13 +18,13 @@ result: pass | fail
 
 Findings: (rule id · object · note)
 
-## Firm checklist (standards/modeling.md, standards/dax.md)
+## Firm checklist (standards/semantic-model.md)
 - [ ] MOD-01 star schema
 - [ ] MOD-02 date table
 - [ ] MOD-03 measures table
 - [ ] ...
 
-## DAX performance checklist (standards/dax.md)
+## DAX performance checklist (standards/semantic-model.md)
 | Measure | Total ms | SE % | FE % | Note |
 
 ## Client override compliance

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1] - 2026-09-02
+### Changed — fewer files
+- `skills/standards/` is now `SKILL.md` (index + overrides table), `semantic-model.md`, `report.md`,
+  plus the two machine-readable rule files moved in from `rules/` (folder removed).
+- `/build-report` removed (the `report` orchestrator covers it); `/review-model` → `/review`, handles
+  models and reports.
+
 ## [0.4.0] - 2026-09-02
 ### Changed — genericised for more domains
 - Dropped the `fsm-` prefix everywhere; plugin renamed `fabric-lifecycle-agents`.
@@ -34,7 +41,7 @@
 ## [0.1.0] - 2026-09-02
 ### Added
 - **MOD-00** rule zero: TMDL/PBIP is the only authoring path, no live edits; Modeling MCP is read-only.
-  Overrides Microsoft's Tier 1 (logged in `skills/standards/overrides.md`); enforced by `hooks/pre-tool-use.sh`.
+  Overrides Microsoft's Tier 1 (logged in `skills/standards/SKILL.md § Overrides`); enforced by `hooks/pre-tool-use.sh`.
 - Initial sample repo: orchestrator skill, firm standards, engagement workflow, review/deploy skills,
   subagents, hooks, commands, rules, evals scaffold, upstream sync workflow.
 - Vendored `microsoft/skills-for-fabric` as a pinned submodule.

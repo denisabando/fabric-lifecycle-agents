@@ -10,10 +10,10 @@ file — `clients/<code>/reviews/<Model>-<yyyymmdd>.md` from
 `skills/engagement-workflow/templates/review-report.md`. Any other write is a bug. Never fix
 findings; they go back to Build.
 
-1. **BPA** — `TabularEditor.exe "<Model>.SemanticModel/definition" -A rules/bpa-rules.json -V`
+1. **BPA** — `TabularEditor.exe "<Model>.SemanticModel/definition" -A skills/standards/bpa-rules.json -V`
    (or `te2` on macOS/Linux). Any `Error` = fail. Microsoft's *Analyze Best Practices* workflow
    may be run as well for the MS default rule set; report both.
-2. **Firm rules** — walk every `MOD-*` in `skills/standards/modeling.md` and `DAX-*` in `skills/standards/dax.md`;
+2. **Firm rules** — walk every `MOD-*` and `DAX-*` in `skills/standards/semantic-model.md`;
    cite ids per finding, with object names.
 3. **Client overrides** — verify each `CO-*` in `clients/<code>/overrides.md` is honoured.
 4. **Performance** — run the DAX performance checklist against the measures `spec.md` names as

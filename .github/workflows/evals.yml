@@ -20,7 +20,7 @@ jobs:
       - name: Lint fixture models with firm naming rules
         run: |
           set -e
-          for f in $(find evals/fixtures -name '*.tmdl'); do python3 scripts/lint-tmdl.py "$f" rules/naming.yaml; done
+          for f in $(find evals/fixtures -name '*.tmdl'); do python3 scripts/lint-tmdl.py "$f" skills/standards/naming.yaml; done
 
       - name: PBIR JSON is well-formed
         run: |
@@ -32,7 +32,7 @@ jobs:
 
       - name: Validate rules JSON / plugin manifest
         run: |
-          python3 -c "import json;json.load(open('rules/bpa-rules.json'));json.load(open('.claude-plugin/plugin.json'));json.load(open('hooks/hooks.json'))"
+          python3 -c "import json;json.load(open('skills/standards/bpa-rules.json'));json.load(open('.claude-plugin/plugin.json'));json.load(open('hooks/hooks.json'))"
 
       - name: Scenario evals (agent-in-the-loop)
         env:

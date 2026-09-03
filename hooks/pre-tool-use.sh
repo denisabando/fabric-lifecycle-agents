@@ -21,7 +21,7 @@ fi
 
 # 1. vendor/ is read-only
 if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*vendor/'; then
-  echo "BLOCKED: vendor/ is Microsoft's skill, pinned and read-only. Put firm changes in skills/standards and log overrides in skills/standards/overrides.md." >&2
+  echo "BLOCKED: vendor/ is Microsoft's skill, pinned and read-only. Put firm changes in skills/standards and log overrides in skills/standards/SKILL.md § Overrides." >&2
   exit 2
 fi
 if [ "$TOOL" = "Bash" ] && printf '%s' "$ARGS" | grep -Eq '(>|>>|sed -i|tee|rm |mv |cp )[^"]*vendor/'; then

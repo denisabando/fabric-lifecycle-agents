@@ -6,7 +6,7 @@ client: acme-demo
 ---
 
 ## Prompt
-/build-report acme-demo "Sales Performance" — implement the approved spec in clients/acme-demo/_brief-report-spec.md
+/report build "Sales Performance" for acme-demo — implement the approved spec in clients/acme-demo/_brief-report-spec.md
 into evals/out/007/Sales Performance.Report.
 
 ## Assertions

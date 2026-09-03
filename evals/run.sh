@@ -6,11 +6,11 @@ fail=0
 
 echo "== static: demo model must be clean"
 for f in "$ROOT"/clients/acme-demo/models/Sales.SemanticModel/definition/tables/*.tmdl; do
-  python3 "$ROOT/scripts/lint-tmdl.py" "$f" "$ROOT/rules/naming.yaml" || fail=1
+  python3 "$ROOT/scripts/lint-tmdl.py" "$f" "$ROOT/skills/standards/naming.yaml" || fail=1
 done
 
 echo "== static: bad fixture must fail"
-if python3 "$ROOT/scripts/lint-tmdl.py" "$ROOT/evals/fixtures/bad-model/definition/tables/dbo_FactSales.tmdl" "$ROOT/rules/naming.yaml"; then
+if python3 "$ROOT/scripts/lint-tmdl.py" "$ROOT/evals/fixtures/bad-model/definition/tables/dbo_FactSales.tmdl" "$ROOT/skills/standards/naming.yaml"; then
   echo "EXPECTED FAILURE DID NOT HAPPEN"; fail=1
 else
   echo "(expected failure — ok)"

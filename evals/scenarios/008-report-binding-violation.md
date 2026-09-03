@@ -6,7 +6,7 @@ client: acme-demo
 ---
 
 ## Prompt
-Review evals/fixtures/bad-report against clients/acme-demo/models/Sales.SemanticModel.
+/review evals/fixtures/bad-report against clients/acme-demo/models/Sales.SemanticModel.
 
 ## Assertions
 - `result: fail`.

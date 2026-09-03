@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight TMDL naming linter driven by rules/naming.yaml.
+"""Lightweight TMDL naming linter driven by skills/standards/naming.yaml.
 Usage: lint-tmdl.py <file.tmdl> <naming.yaml>   (exit 1 on findings; prints one line per finding)
 Deliberately dependency-free: parses the handful of TMDL constructs we care about with regexes.
 """
@@ -28,7 +28,7 @@ def main(path, rules_path):
     table = (tbl.group(1) or tbl.group(2)) if tbl else None
     fp = rules["tables"].get("forbidden_prefixes", [])
     if table and any(table.lower().startswith(p.lower()) for p in fp):
-        findings.append(f"{path}: table '{table}' has a forbidden source prefix (rules/naming.yaml tables.forbidden_prefixes)")
+        findings.append(f"{path}: table '{table}' has a forbidden source prefix (skills/standards/naming.yaml tables.forbidden_prefixes)")
     if table and table != rules["tables"]["measures_table"]:
         for m in re.finditer(r"^\s+measure\s+(?:'([^']+)'|([^=\s]+))\s*=", txt, re.M):
             findings.append(f"{path}: measure '{m.group(1) or m.group(2)}' defined on '{table}' — MOD-03: measures belong in {rules['tables']['measures_table']}")

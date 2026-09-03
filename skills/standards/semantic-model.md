@@ -1,6 +1,7 @@
-# Modelling standards (MOD-*)
+# Semantic model standards (MOD-*, DAX-*)
 
-Rule ids are cited by the reviewer, the linter and `rules/bpa-rules.json`. Cite them in your output.
+Rule ids are cited by the reviewer, the linter and `bpa-rules.json`. Cite them in your output.
+Departures from Microsoft are listed in `SKILL.md § Overrides`.
 
 ## Rule zero — the diffable path
 
@@ -17,7 +18,7 @@ Rule ids are cited by the reviewer, the linter and `rules/bpa-rules.json`. Cite 
   - If a model exists only as a `.pbix` or only in a workspace, the first step is to export it
     to PBIP (Microsoft's *Export to PBIP* workflow), commit that baseline, and work from there.
   - This **overrides Microsoft's Tool Selection Priority Tier 1** (MCP live authoring). Logged in
-    `skills/standards/overrides.md`. Reason: on an engagement every change must be reviewable as a diff,
+    `SKILL.md § Overrides`. Reason: on an engagement every change must be reviewable as a diff,
     reproducible from git, and attributable — a live edit is none of those.
 
 ## Structure
@@ -38,7 +39,7 @@ Rule ids are cited by the reviewer, the linter and `rules/bpa-rules.json`. Cite 
   switching. Not for anything a plain measure expresses. Skip entirely if the client override
   says the client cannot maintain them.
 
-## Naming (enforced by `rules/naming.yaml`)
+## Naming (enforced by `naming.yaml`)
 
 - Tables: business names, singular, Title Case, spaces allowed (`Customer`, `Sales Order`).
 - Columns: Title Case with spaces; no prefixes; no source-system abbreviations.
@@ -66,6 +67,64 @@ Rule ids are cited by the reviewer, the linter and `rules/bpa-rules.json`. Cite 
 - **MOD-30** Every visible table, column and measure has a description. Synonyms on the top
   20 business terms from the glossary. This is also what the handover pack is built from.
 
+For engine mechanics and optimisation patterns, load
+Microsoft's `dax-guidelines.md`, `dax-perf-decision-guide.md` and `dax-perf-patterns.md` from the
+vendored skill.
 
-Where these rules depart from Microsoft's guidance, the departure is recorded in `overrides.md`.
-See `rls-patterns.md` for worked RLS examples.
+## DAX style
+
+- **DAX-01** Format every measure with DAX Formatter conventions (one function per line, 4-space
+  indent, `VAR`/`RETURN` on their own lines).
+- **DAX-02** Fully qualify columns `'Table'[Column]`; never qualify measures `[Measure]`.
+- **DAX-03** Use `VAR` for any expression referenced twice or for readability; name variables
+  `_CamelCase` with a leading underscore.
+- **DAX-04** Every measure has a `formatString` and a `description` written for a business reader.
+- **DAX-05** Base measures first, then derived. Derived measures reference base measures, never
+  re-aggregate columns.
+
+## DAX patterns
+
+- **DAX-10** Ratios: `DIVIDE ( num, den )` — never `/`.
+- **DAX-11** Time intelligence via the `Time Calc` calculation group (MOD-07). Do not hand-write
+  `YTD`/`PY` variants per measure unless the client override disables calc groups.
+- **DAX-12** Flags: return `1`/`0` or `TRUE()`/`FALSE()`, not strings.
+- **DAX-13** Selection-aware measures use `ISFILTERED`/`HASONEVALUE` guards, with a documented
+  behaviour for the "no selection" case.
+
+## DAX anti-patterns (review will fail)
+
+- **DAX-20** `FILTER ( 'Fact', ... )` over a whole fact table inside `CALCULATE` when a column
+  filter would do.
+- **DAX-21** Iterators (`SUMX` etc.) over fact tables when a column-level aggregate is equivalent.
+- **DAX-22** `CALCULATE` with `ALL('Fact')` as a shortcut — use `ALLSELECTED`/`REMOVEFILTERS` on
+  the intended dimension.
+- **DAX-23** Calculated columns on fact tables (push to source or M) — hard block in Direct Lake.
+- **DAX-24** `IF` chains longer than 3 branches — use `SWITCH ( TRUE (), ... )`.
+
+## DAX performance checklist (attach to the review report)
+
+1. Server timings for the 5 heaviest measures on the largest visual in the spec.
+2. Storage engine vs formula engine split; anything > 50 % FE gets a `dax-perf-patterns` pass.
+3. No `CallbackDataID` on hot measures.
+4. Cardinality of relationship columns reviewed; high-cardinality datetime keys replaced with
+   integer surrogate keys.
+
+## Appendix — RLS patterns (MOD-20..22)
+
+## Pattern A — static role per region
+Role `RLS - EMEA`: `'Region'[Region Code] = "EMEA"`
+
+## Pattern B — dynamic via security table
+Table `Security User Region` (UserPrincipalName, RegionKey), hidden, single-direction to `Region`,
+then `Region` → `Sales`. Role `RLS - Dynamic Region`:
+```dax
+'Region'[RegionKey] IN
+    CALCULATETABLE (
+        VALUES ( 'Security User Region'[RegionKey] ),
+        'Security User Region'[UserPrincipalName] = USERPRINCIPALNAME ()
+    )
+```
+
+## Pattern C — Direct Lake
+Same as B, but the security table must exist in the Lakehouse; RLS with Direct Lake falls back to
+DirectQuery for the filtered tables — say so in `spec.md` and test it (MOD-22).
