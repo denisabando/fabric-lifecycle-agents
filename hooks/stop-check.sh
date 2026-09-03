@@ -14,7 +14,7 @@ cd "$ROOT" || exit 0
 CHANGED="$(git status --porcelain -- models 2>/dev/null | wc -l | tr -d ' ')"
 DECISION="$(git status --porcelain -- decisions 2>/dev/null | wc -l | tr -d ' ')"
 if [ "$CHANGED" -gt 0 ] && [ "$DECISION" -eq 0 ]; then
-  echo "Decision record missing: this turn changed $CHANGED file(s) under models/ but nothing under decisions/. Write decisions/$(date +%Y-%m-%d)-<slug>.md from skills/engagement-workflow/templates/decision.md (the §6 output block is its body), then finish." >&2
+  echo "Decision record missing: this turn changed $CHANGED file(s) under models/ but nothing under decisions/. Write decisions/<skill>/$(date +%Y-%m-%d)-<slug>.md (skill = semantic-model or report) from skills/engagement-workflow/templates/decision.md (the §6 output block is its body), then finish." >&2
   exit 2
 fi
 exit 0

@@ -1,7 +1,7 @@
 ---
 date: <yyyy-mm-dd>
 session: <claude session id — from the audit log>
-domain: semantic-model | report
+domain: semantic-model | report        # also the subfolder this file lives in: decisions/<domain>/
 phase: <discovery|spec|build|review|deploy|handover>
 commit: <sha of the commit that carries the change, once made>
 consultant: <who asked>

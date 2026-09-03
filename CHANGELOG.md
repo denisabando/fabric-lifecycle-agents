@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.2] - 2026-09-02
+### Changed
+- Decision records live in `decisions/<skill>/` (one subfolder per domain skill, mirroring `skills/`).
+
 ## [0.6.1] - 2026-09-02
 ### Changed
 - Audit folder renamed `.audit/` → `audit/` so it is visible in Finder / Explorer. Hook protection now targets the `.jsonl` log files inside it.

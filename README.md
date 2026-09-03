@@ -107,7 +107,7 @@ Two trails, produced differently, both in the client folder so they travel with 
   results. Read-only tools are skipped unless `engagement.yaml: audit.include_reads: true`. The agent
   cannot edit `audit/` (hook-blocked). Roughly a few hundred lines per busy day.
 - **Narrative — why.** Every task that changes `models/` ends with a decision record in
-  `<client-root>/decisions/` (template: `skills/engagement-workflow/templates/decision.md`): request, what
+  `<client-root>/decisions/<skill>/` — one subfolder per skill, mirroring `skills/` (template: `skills/engagement-workflow/templates/decision.md`): request, what
   changed, rules and overrides applied, questions asked and answered, interventions, next gate. The Stop
   hook refuses to end a turn that changed models without one. Commit trailers `Decision:` and
   `Agent-Session:` tie the commit to both trails.

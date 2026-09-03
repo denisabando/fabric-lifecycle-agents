@@ -75,11 +75,11 @@ RPT-03 `byPath` during build · RPT-04 theme, no hard-coded series colours · RP
 ## 6. Output block → decision record
 
 Finish every task with the block below **and** write it into
-`<client-root>/decisions/<yyyy-mm-dd>-<slug>.md` using
+`<client-root>/decisions/report/<yyyy-mm-dd>-<slug>.md` using
 `skills/engagement-workflow/templates/decision.md` — request, what changed, why (rules, overrides),
 questions asked and answered, interventions (hook blocks, corrections), next gate. The Stop hook
 refuses to finish a turn that changed `models/` without one. Commit it with the change; the commit
-message carries `Decision: decisions/<file>` and `Agent-Session: <id>` trailers. The mechanical
+message carries `Decision: decisions/report/<file>` and `Agent-Session: <id>` trailers. The mechanical
 record of what happened (every prompt, tool call and block) is written by hooks to
 `<client-root>/audit/` — you never write there.
 
