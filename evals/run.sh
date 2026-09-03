@@ -33,9 +33,9 @@ echo "== static: audit hook smoke test (writes to a temp client root, not the de
 TMPC="$(mktemp -d)"; cp "$ROOT/clients/acme-demo/engagement.yaml" "$TMPC/"
 echo '{"session_id":"t","tool_name":"Edit","tool_input":{"file_path":"'"$TMPC"'/models/x.tmdl"}}' | FLA_CLIENT_ROOT="$TMPC" bash "$ROOT/hooks/audit.sh" PreToolUse
 echo '{"session_id":"t","tool_name":"Read","tool_input":{"file_path":"'"$TMPC"'/models/x.tmdl"}}' | FLA_CLIENT_ROOT="$TMPC" bash "$ROOT/hooks/audit.sh" PreToolUse
-echo '{"session_id":"t","tool_name":"Write","tool_input":{"file_path":"'"$TMPC"'/.audit/2020-01-01.jsonl"}}' | FLA_CLIENT_ROOT="$TMPC" bash "$ROOT/hooks/pre-tool-use.sh" 2>/dev/null && { echo "audit dir was writable — FAIL"; fail=1; }
-N="$(cat "$TMPC"/.audit/*.jsonl | wc -l | tr -d ' ')"
-[ "$N" = "2" ] && echo "audit: 2 lines (Edit logged, Read skipped, .audit write blocked+logged)" || { echo "audit: expected 2 lines, got $N"; fail=1; }
+echo '{"session_id":"t","tool_name":"Write","tool_input":{"file_path":"'"$TMPC"'/audit/2020-01-01.jsonl"}}' | FLA_CLIENT_ROOT="$TMPC" bash "$ROOT/hooks/pre-tool-use.sh" 2>/dev/null && { echo "audit dir was writable — FAIL"; fail=1; }
+N="$(cat "$TMPC"/audit/*.jsonl | wc -l | tr -d ' ')"
+[ "$N" = "2" ] && echo "audit: 2 lines (Edit logged, Read skipped, audit write blocked+logged)" || { echo "audit: expected 2 lines, got $N"; fail=1; }
 rm -rf "$TMPC"
 
 echo "== scenarios"

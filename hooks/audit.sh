@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Mechanical audit trail. Registered on UserPromptSubmit, PreToolUse, PostToolUse, SubagentStart,
 # SubagentStop and Stop; also called by pre-tool-use.sh with event "Blocked".
-# Appends ONE JSON line per event to <client-root>/.audit/YYYY-MM-DD.jsonl.
+# Appends ONE JSON line per event to <client-root>/audit/YYYY-MM-DD.jsonl.
 #   - metadata only: never file contents, never tool output bodies, never query results
 #   - read-only tools (Read/Glob/Grep/LS) are skipped unless engagement.yaml sets audit.include_reads: true
-#   - the agent cannot edit .audit/ (pre-tool-use.sh blocks it); the log is committed with the work
+#   - the agent cannot edit audit/ (pre-tool-use.sh blocks it); the log is committed with the work
 #   usage: audit.sh <EventName>   (event JSON on stdin, as Claude Code provides it)
 set -uo pipefail
 EVENT="${1:-unknown}"
@@ -22,7 +22,7 @@ READ_ONLY = {"Read", "Glob", "Grep", "LS", "TodoWrite", "TodoRead", "WebFetch", 
 path = ti.get("file_path") or ti.get("path") or ti.get("notebook_path") or ""
 root = subprocess.run(["bash", os.path.join(here, "..", "scripts", "client-root.sh"), path], capture_output=True, text=True).stdout.strip()
 if not root:
-    root = os.path.join(os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd()), ".audit-unassigned")
+    root = os.path.join(os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd()), "audit-unassigned")
 cfg = {"include_reads": False}
 try:
     for line in open(os.path.join(root, "engagement.yaml")):
@@ -61,8 +61,8 @@ elif event == "Stop":
         rec["uncommitted_changes"] = len(st)
     except Exception: pass
 
-os.makedirs(os.path.join(root, ".audit"), exist_ok=True)
-fn = os.path.join(root, ".audit", datetime.date.today().isoformat() + ".jsonl")
+os.makedirs(os.path.join(root, "audit"), exist_ok=True)
+fn = os.path.join(root, "audit", datetime.date.today().isoformat() + ".jsonl")
 with open(fn, "a", encoding="utf-8") as f: f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 PY
 exit 0

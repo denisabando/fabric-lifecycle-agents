@@ -1,6 +1,6 @@
 ---
 date: <yyyy-mm-dd>
-session: <claude session id — from the .audit log>
+session: <claude session id — from the audit log>
 domain: semantic-model | report
 phase: <discovery|spec|build|review|deploy|handover>
 commit: <sha of the commit that carries the change, once made>

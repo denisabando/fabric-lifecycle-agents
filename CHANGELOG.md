@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.1] - 2026-09-02
+### Changed
+- Audit folder renamed `.audit/` → `audit/` so it is visible in Finder / Explorer. Hook protection now targets the `.jsonl` log files inside it.
+
 ## [0.6.0] - 2026-09-02
 ### Added — audit trail
 - `hooks/audit.sh` on UserPromptSubmit / PreToolUse / PostToolUse / SubagentStart / SubagentStop / Stop

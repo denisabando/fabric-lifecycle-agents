@@ -11,10 +11,10 @@ block() {  # record the block in the audit trail, then refuse
   echo "$1" >&2; exit 2
 }
 
-# 00. the audit trail is append-only and not the agent's to edit
-if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*/\.audit/' || \
-   { [ "$TOOL" = "Bash" ] && printf '%s' "$ARGS" | grep -Eq '\.audit/[^"]*(>|>>|rm |mv |sed -i|tee|truncate)|(>|>>|rm |mv |sed -i|tee|truncate)[^"]*\.audit/'; }; then
-  block "BLOCKED: .audit/ is the append-only audit trail; only hooks write there."
+# 00. the audit trail is append-only and not the agent's to edit (only the .jsonl logs inside audit/)
+if printf '%s' "$ARGS" | grep -Eq '"(file_path|path)"\s*:\s*"[^"]*/audit/[^"]*\.jsonl' || \
+   { [ "$TOOL" = "Bash" ] && printf '%s' "$ARGS" | grep -Eq '/audit/[^" ]*\.jsonl[^"]*(>|>>|rm |mv |sed -i|tee|truncate)|(>|>>|rm |mv |sed -i|tee|truncate)[^"]*/audit/[^" ]*\.jsonl'; }; then
+  block "BLOCKED: audit/ is the append-only audit trail; only hooks write there."
 fi
 
 # 0. MOD-00 — no live edits: Modeling MCP is read-only; writes go to TMDL files

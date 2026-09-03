@@ -102,10 +102,10 @@ tagged `prod` in `engagement.yaml` without an explicit human confirmation.
 Two trails, produced differently, both in the client folder so they travel with the client's repo:
 
 - **Mechanical — what happened.** `hooks/audit.sh` runs on every prompt, tool call, subagent start/stop,
-  hook block and turn end, appending one JSON line to `<client-root>/.audit/<date>.jsonl`. Metadata only
+  hook block and turn end, appending one JSON line to `<client-root>/audit/<date>.jsonl`. Metadata only
   (event, tool, path, truncated command, block reason, file fingerprint) — never file contents or query
   results. Read-only tools are skipped unless `engagement.yaml: audit.include_reads: true`. The agent
-  cannot edit `.audit/` (hook-blocked). Roughly a few hundred lines per busy day.
+  cannot edit `audit/` (hook-blocked). Roughly a few hundred lines per busy day.
 - **Narrative — why.** Every task that changes `models/` ends with a decision record in
   `<client-root>/decisions/` (template: `skills/engagement-workflow/templates/decision.md`): request, what
   changed, rules and overrides applied, questions asked and answered, interventions, next gate. The Stop

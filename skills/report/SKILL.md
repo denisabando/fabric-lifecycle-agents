@@ -81,7 +81,7 @@ questions asked and answered, interventions (hook blocks, corrections), next gat
 refuses to finish a turn that changed `models/` without one. Commit it with the change; the commit
 message carries `Decision: decisions/<file>` and `Agent-Session: <id>` trailers. The mechanical
 record of what happened (every prompt, tool call and block) is written by hooks to
-`<client-root>/.audit/` — you never write there.
+`<client-root>/audit/` — you never write there.
 
 ```
 Phase:         <report-spec|design|build|review|deploy>
