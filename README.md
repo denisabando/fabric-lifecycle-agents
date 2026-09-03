@@ -23,7 +23,7 @@ overrides — **without ever editing Microsoft's files**.
 The handoff is a **git commit, not a document**. When the model reviewer passes a model it records
 `model_commit` in the review report; the report domain reads the model's TMDL at that sha (using
 Microsoft's own PBIP/TMDL guidance — nothing new to learn) and binds only to visible objects.
-`scripts/check-report-bindings.py <Report>.Report <Model>.SemanticModel --at <sha>` is the test at
+`scripts/check-report-bindings.js <Report>.Report <Model>.SemanticModel --at <sha>` is the test at
 that boundary; the post-edit hook runs it on every report JSON change and CI runs it on every PR.
 If the model is re-reviewed at a new commit, the check is re-run and the report review reopens if
 anything broke. Agents talk through files in the client repo, never through each other's context. A lifecycle orchestrator above both is deferred until a third
@@ -61,7 +61,7 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | `skills/report/` | Firm | **Report domain, one file.** Same six sections; `theme.json` beside it |
 | `skills/engagement-workflow/` | Firm | Phases, gates and templates shared by every domain |
 | `agents/` | Firm | `modeler`, `reviewer` + `report-reviewer` (read-only; review steps live here), `deployer` (gates + mechanisms live here) |
-| `hooks/` | Firm | Enforcement (protect `vendor/`, lint on edit, gate prod deploys) and the mechanical audit trail (`audit.sh`, `stop-check.sh`) |
+| `hooks/` | Firm | Enforcement (protect `vendor/`, lint on edit, gate prod deploys) and the mechanical audit trail (`audit.js`, `usage.js`, `stop-check.js`) |
 | `commands/` | Firm | `/new-engagement`, `/review`, `/sync-upstream` |
 | `clients/` | Engagement | `_template/` is committed; real client folders are git-ignored (see below) |
 | `evals/` | Firm | Scenario evals + fixture PBIP models run on every PR |
@@ -77,7 +77,12 @@ cd fabric-lifecycle-agents
 /plugin install fabric-lifecycle-agents@fabric-agents
 ```
 
-The plugin manifest registers the Power BI Modeling MCP server (read-only on engagements, MOD-00). You also need Power BI
+The plugin manifest registers the Power BI Modeling MCP server (read-only on engagements, MOD-00).
+
+**Runs on Windows, macOS and Linux with no extra runtime.** Every hook and script is JavaScript run by
+Node.js, which Claude Code already requires — no bash, no Python. Paths are normalised so Windows
+backslashes match the same rules. Tabular Editor (`TabularEditor.exe`) and `powerbi-report-author` are
+used when on PATH and reported as skipped when not. You also need Power BI
 Desktop with PBIP/TMDL enabled, Azure CLI (`az login`) for Fabric REST calls, and Tabular Editor 2
 CLI on PATH for BPA runs.
 
@@ -101,7 +106,7 @@ tagged `prod` in `engagement.yaml` without an explicit human confirmation.
 
 Two trails, produced differently, both in the client folder so they travel with the client's repo:
 
-- **Mechanical — what happened.** `hooks/audit.sh` runs on every prompt, tool call, subagent start/stop,
+- **Mechanical — what happened.** `hooks/audit.js` runs on every prompt, tool call, subagent start/stop,
   hook block and turn end, appending one JSON line to `<client-root>/audit/<date>.jsonl`. Metadata only
   (event, tool, path, truncated command, block reason, file fingerprint) — never file contents or query
   results. Read-only tools are skipped unless `engagement.yaml: audit.include_reads: true`. The agent
@@ -112,15 +117,15 @@ Two trails, produced differently, both in the client folder so they travel with 
   hook refuses to end a turn that changed models without one. Commit trailers `Decision:` and
   `Agent-Session:` tie the commit to both trails.
 
-- **Tokens and cost.** `hooks/usage.sh` runs on turn end, reads the session transcript Claude Code names in
+- **Tokens and cost.** `hooks/usage.js` runs on turn end, reads the session transcript Claude Code names in
   the Stop payload, sums per-message token usage by model, and appends one `Usage` line per turn: turn
   tokens and cost, session cumulative, and the `checked` date of `hooks/pricing.yaml` so a stale price
   table is visible. Estimates; the main session only (subagent transcripts are separate — see
-  OPEN-QUESTIONS). `scripts/usage-report.py <client-root> --by session|day|model|skill` aggregates it;
+  OPEN-QUESTIONS). `scripts/usage-report.js <client-root> --by session|day|model|skill` aggregates it;
   `--by skill` joins sessions to decision records for cost per task.
 
 Human approvals (spec sign-off, review verdict, prod confirmation) stay in their artefacts and, on a
-real engagement, in the pull request. `scripts/client-root.sh` is the one place that resolves where the
+real engagement, in the pull request. `scripts/lib.js (clientRoot)` is the one place that resolves where the
 client folder is — set `FLA_CLIENT_ROOT` when the client content moves to its own repo.
 
 ## Keeping the Microsoft base current

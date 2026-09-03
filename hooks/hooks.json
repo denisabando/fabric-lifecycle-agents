@@ -5,18 +5,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.sh\" UserPromptSubmit"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.js\" UserPromptSubmit"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit|Bash",
+        "matcher": "Edit|Write|MultiEdit|Bash|mcp__.*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-tool-use.sh\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-tool-use.js\""
           }
         ]
       },
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.sh\" PreToolUse"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.js\" PreToolUse"
           }
         ]
       }
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-tmdl.sh\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit.js\""
           }
         ]
       },
@@ -43,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.sh\" PostToolUse"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.js\" PostToolUse"
           }
         ]
       }
@@ -53,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.sh\" SubagentStart"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.js\" SubagentStart"
           }
         ]
       }
@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.sh\" SubagentStop"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.js\" SubagentStop"
           }
         ]
       }
@@ -73,7 +73,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.sh\" Stop"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/audit.js\" Stop"
           }
         ]
       },
@@ -81,7 +81,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/usage.sh\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/usage.js\""
           }
         ]
       },
@@ -89,7 +89,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-check.sh\""
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-check.js\""
           }
         ]
       }

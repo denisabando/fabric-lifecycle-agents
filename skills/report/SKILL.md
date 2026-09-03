@@ -46,7 +46,7 @@ after each batch; `powerbi-report-management` → publish, Deploy phase only. Ne
   `<Report>.Report/definition/**` JSON in the client repo; every change is a file edit + commit. Never
   author in the service; never save or commit `.pbix`; Desktop is for `powerbi-desktop` reload /
   screenshot verification only. (Consistent with Microsoft — rule zero to match MOD-00.)
-- **RPT-01** Bind to the reviewed commit, visible objects only. `scripts/check-report-bindings.py
+- **RPT-01** Bind to the reviewed commit, visible objects only. `scripts/check-report-bindings.js
   <Report>.Report <Model>.SemanticModel --at <sha>` enforces it; if the model is re-reviewed at a new
   commit, re-run and re-pin. *(override, see §3)*
 - **RPT-02** No report-level measures or calculated fields. A missing number is a model change
@@ -59,7 +59,7 @@ after each batch; `powerbi-report-management` → publish, Deploy phase only. Ne
 - **RPT-08** Visual titles use glossary business terms, not model object names.
 
 **Review checklist** (the `report-reviewer` walks this): RPT-00 only PBIR files changed, no `.pbix` or
-`localSettings.json` · `powerbi-report-author validate` clean · RPT-01 `check-report-bindings.py --at
+`localSettings.json` · `powerbi-report-author validate` clean · RPT-01 `check-report-bindings.js --at
 <model_commit>` clean and the sha matches the latest passing model review · RPT-02 no report measures ·
 RPT-03 `byPath` during build · RPT-04 theme, no hard-coded series colours · RPT-07 / RPT-08 · Microsoft's
 `pre-flight-checklist.md` and `accessibility.md` walked · Desktop screenshot of each page attached.

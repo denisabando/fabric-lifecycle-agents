@@ -62,7 +62,7 @@ and committed as the baseline. If a user asks for a live edit, explain this and 
 
 ## 4. Firm additions (things Microsoft does not say)
 
-Rule ids are cited by the reviewer, `scripts/lint-tmdl.py` (via `naming.yaml`) and `bpa-rules.json`.
+Rule ids are cited by the reviewer, `scripts/lint-tmdl.js` (via `naming.yaml`) and `bpa-rules.json`.
 
 **Structure**
 - **MOD-02** The date table is named `Date`; fiscal columns are driven by
@@ -112,7 +112,7 @@ Machine-checkable subset: `naming.yaml` (linter), `bpa-rules.json` (Tabular Edit
 
 **Handoff to the report domain** is the reviewed commit: the passing review records `model_commit`
 and the report domain builds against the TMDL at that sha. After any later model change, the report
-track re-runs `scripts/check-report-bindings.py --at <new sha>` once a new review passes. Measures
+track re-runs `scripts/check-report-bindings.js --at <new sha>` once a new review passes. Measures
 the report domain needs arrive as `clients/<code>/<Model>.model-change-requests.md` — spec revisions,
 not ad-hoc additions.
 

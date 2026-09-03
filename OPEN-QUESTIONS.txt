@@ -9,7 +9,8 @@ STATUS: architecture scaffold, v0.6.2. Never run end to end against real tools.
 [ ] 2026-09-02  Validate bpa-rules.json loads in Tabular Editor; fix expressions.
 [ ] 2026-09-02  Run powerbi-report-author validate on the demo PBIR; open it in Desktop
                 (schema URLs / visual JSON unverified).
-[ ] 2026-09-02  Confirm hook event names + payload fields match Claude Code
+[ ] 2026-09-02  Confirm hook event names + payload fields match Claude Code, and that
+                ${CLAUDE_PLUGIN_ROOT} expands correctly in hooks.json on Windows
                 (UserPromptSubmit, SubagentStart/Stop, Stop, stop_hook_active, transcript_path).
 [ ] 2026-09-02  Firm rules (§3–4 in both skills) are my drafts. Practice must review, keep, or cut.
                 Only MOD-00 came from a stated requirement.
@@ -53,7 +54,7 @@ STATUS: architecture scaffold, v0.6.2. Never run end to end against real tools.
                 no post-deploy refresh verification.
 [ ] 2026-09-02  DAX-30 asks for server timings; nothing collects them.
 [ ] 2026-09-02  Handover pack "generated from TMDL" — no script exists.
-[ ] 2026-09-02  Eval scenario grader unwired (evals/run.sh runs prompts, judges nothing).
+[ ] 2026-09-02  Eval scenario grader unwired (evals/run.js runs prompts, judges nothing).
 [ ] 2026-09-02  Firm-wide telemetry (OTEL export) not configured. Per-client audit only.
 [ ] 2026-09-02  Token/cost trail reads the MAIN session transcript only; subagent (modeler,
                 reviewer, deployer) transcripts are separate files and are not counted yet.
@@ -62,6 +63,8 @@ STATUS: architecture scaffold, v0.6.2. Never run end to end against real tools.
 [ ] 2026-09-02  Audit log retention / client contract terms.
 
 --- DECIDED (keep for the record) ------------------------------------------------
+[x] 2026-09-02  Hooks and scripts are Node.js (Claude Code's own runtime) — no bash/Python on
+                consultant machines. Windows paths normalised in lib.js.
 [x] 2026-09-02  TMDL/PBIP only, no live edits; MCP read-only (MOD-00).
 [x] 2026-09-02  Overrides + additions live in skills/<domain>/SKILL.md §3–4; no standards folder.
 [x] 2026-09-02  No model-contract file; report pins the model_commit from a passing review.

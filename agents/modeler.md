@@ -18,7 +18,7 @@ How you work, specifically as the modeler:
 - Edit the TMDL files directly; state the path you used. The Modeling MCP, if connected, is for
   checking your work (list / get / validate), never for writing.
 - Small commits: one table or one measure group per commit, message `model(<Model>): <what>`.
-- Run `python3 scripts/lint-tmdl.py <file> skills/semantic-model/naming.yaml` on each file you
+- Run `node scripts/lint-tmdl.js <file> skills/semantic-model/naming.yaml` on each file you
   touch before committing (the post-edit hook does this too; do not rely on it alone).
 
 Finish with the output block from `skills/semantic-model/SKILL.md` §6.

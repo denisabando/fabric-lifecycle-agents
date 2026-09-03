@@ -1,4 +1,4 @@
-# Machine-checkable naming rules for scripts/lint-tmdl.py.
+# Machine-checkable naming rules for scripts/lint-tmdl.js.
 # Mostly enforces Microsoft's naming-conventions.md (no technical prefixes, keys hidden);
 # the firm additions are measures_table (MOD-03) and the description/format requirement (DAX-04).
 version: 1

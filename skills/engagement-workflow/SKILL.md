@@ -27,7 +27,7 @@ the new sha and Review reopens if anything broke.
 | - | ----- | -------- | ------------------- | -------- |
 | R1 | Report spec | `_brief/report-spec.md` (Microsoft `powerbi-report-planning`) | client sign-off `status: approved` | — |
 | R2 | Design | design brief in the spec (Microsoft `powerbi-report-design`) | consultant accepts | — |
-| R3 | Build | `models/<Report>.Report/definition/**` PBIR in git | `powerbi-report-author validate` + `check-report-bindings.py --at <model_commit>` clean | (report) |
+| R3 | Build | `models/<Report>.Report/definition/**` PBIR in git | `powerbi-report-author validate` + `check-report-bindings.js --at <model_commit>` clean | (report) |
 | R4 | Review | `reviews/<Report>-report-<yyyymmdd>.md` | `result: pass` | `report-reviewer` |
 | R5 | Deploy | `deployments/<Report>-<env>-<yyyymmdd>.md` | model already in that env; prod token | `deployer` |
 | R6 | Handover | added to the model's handover pack | client acceptance | — |

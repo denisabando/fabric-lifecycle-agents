@@ -1,10 +1,18 @@
 # Changelog
 
+## [0.8.0] - 2026-09-02
+### Changed — Node everywhere (Windows-ready)
+- All hooks and scripts rewritten in JavaScript for Node.js, which Claude Code already requires.
+  Bash and Python removed from the plugin. `scripts/lib.js` holds the shared helpers (client-root
+  resolver, YAML-lite reader, audit append, PATH lookup that works on Windows).
+- Path matching normalises backslashes; PowerShell write verbs (`Set-Content`, `Out-File`, `del`,
+  `move`) are covered by the audit/vendor guards. `evals/run.js` replaces `run.sh`.
+
 ## [0.7.0] - 2026-09-02
 ### Added — tokens and cost in the audit trail
-- `hooks/usage.sh` (Stop): per-turn and per-session token counts by model from the transcript, priced
+- `hooks/usage.js` (Stop): per-turn and per-session token counts by model from the transcript, priced
   with `hooks/pricing.yaml` (dated; estimates). One `Usage` event per turn in `audit/<date>.jsonl`.
-- `scripts/usage-report.py`: aggregate by session / day / model / skill (joins decision records).
+- `scripts/usage-report.js`: aggregate by session / day / model / skill (joins decision records).
 - `audit/state/` holds per-session counters (git-ignored).
 
 ## [0.6.2] - 2026-09-02
@@ -17,11 +25,11 @@
 
 ## [0.6.0] - 2026-09-02
 ### Added — audit trail
-- `hooks/audit.sh` on UserPromptSubmit / PreToolUse / PostToolUse / SubagentStart / SubagentStop / Stop
+- `hooks/audit.js` on UserPromptSubmit / PreToolUse / PostToolUse / SubagentStart / SubagentStop / Stop
   and on every hook block: one JSON line per event in `<client-root>/.audit/<date>.jsonl`, metadata only.
-- `hooks/stop-check.sh`: a turn that changed `models/` must leave a decision record in `decisions/`.
+- `hooks/stop-check.js`: a turn that changed `models/` must leave a decision record in `decisions/`.
 - `skills/engagement-workflow/templates/decision.md`; §6 of both domain skills now writes it.
-- `scripts/client-root.sh`: single resolver for the client folder (`FLA_CLIENT_ROOT` → nearest
+- `scripts/lib.js (clientRoot)`: single resolver for the client folder (`FLA_CLIENT_ROOT` → nearest
   `engagement.yaml` → sole non-template `clients/*`). The seam for moving client content to its own repo.
 - `.audit/` is hook-protected; `engagement.yaml: audit:` settings; demo decision record + audit day.
 
@@ -65,7 +73,7 @@
 ### Changed — simplification pass
 - **Model contract file removed.** The handoff to the report domain is now the `model_commit`
   recorded by a passing model review; reports read TMDL at that sha (Microsoft's own path) and bind
-  to visible objects. `scripts/check-report-bindings.py --at <sha>` replaces the contract generator +
+  to visible objects. `scripts/check-report-bindings.js --at <sha>` replaces the contract generator +
   contract check. Change requests move to `clients/<code>/<Model>.model-change-requests.md`.
 - `fsm-review` and `fsm-deployment` skills folded into the `reviewer` and `deployer` agents (they were
   only ever read by those agents). Four firm skills remain for the model domain.
@@ -86,7 +94,7 @@
 ## [0.1.0] - 2026-09-02
 ### Added
 - **MOD-00** rule zero: TMDL/PBIP is the only authoring path, no live edits; Modeling MCP is read-only.
-  Overrides Microsoft's Tier 1 (logged in `skills/<domain>/SKILL.mdSKILL.md § Overrides`); enforced by `hooks/pre-tool-use.sh`.
+  Overrides Microsoft's Tier 1 (logged in `skills/<domain>/SKILL.mdSKILL.md § Overrides`); enforced by `hooks/pre-tool-use.js`.
 - Initial sample repo: orchestrator skill, firm standards, engagement workflow, review/deploy skills,
   subagents, hooks, commands, rules, evals scaffold, upstream sync workflow.
 - Vendored `microsoft/skills-for-fabric` as a pinned submodule.

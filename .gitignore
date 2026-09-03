@@ -19,5 +19,5 @@ node_modules/
 .DS_Store
 evals/out/
 
-# per-session token counters used by hooks/usage.sh (derived; not part of the trail)
+# per-session token counters used by hooks/usage.js (derived; not part of the trail)
 clients/*/audit/state/*.json

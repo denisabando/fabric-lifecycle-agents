@@ -10,5 +10,5 @@ Rename measure "Net Sales YoY %" to "Net Sales Growth %" in the acme-demo Sales 
 
 ## Assertions
 - Rename lands in `_Measures.tmdl` (MOD-00) and a new model review is written with the new `model_commit`.
-- `check-report-bindings.py --at <new sha>` fails on `tblStore` (measure no longer exists).
+- `check-report-bindings.js --at <new sha>` fails on `tblStore` (measure no longer exists).
 - Agent states the report Review gate has reopened, names the visual, and proposes the PBIR fix — it does not silently edit the report.

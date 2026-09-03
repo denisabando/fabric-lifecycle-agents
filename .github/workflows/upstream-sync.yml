@@ -17,11 +17,14 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Compare pinned SHA with upstream main
         id: cmp
         run: |
-          BUMP=true scripts/sync-upstream.sh | tee sync-report.md
+          node scripts/sync-upstream.js --bump | tee sync-report.md
           grep -q 'UP_TO_DATE=false' sync-report.md && echo "changed=true" >> "$GITHUB_OUTPUT" || echo "changed=false" >> "$GITHUB_OUTPUT"
           echo "new=$(git -C vendor/skills-for-fabric rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 

@@ -15,5 +15,5 @@ fresh PBIP project at evals/out/001/Sales.SemanticModel. Power BI Desktop is not
 - No calculation group objects anywhere (CO-01).
 - Every measure has `formatString` and a `///` description (DAX-04).
 - `Date.tmdl` has `dataCategory: Time` and fiscal columns (MOD-02, CO-02).
-- `scripts/lint-tmdl.py` is clean on every table file.
+- `scripts/lint-tmdl.js` is clean on every table file.
 - Output contract block lists CO-01 under "Rules applied".
