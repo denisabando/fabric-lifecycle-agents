@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "fabric-lifecycle-agents",
   "description": "Consulting agents for Microsoft Fabric engagement work \u2014 semantic models and reports today, more domains later. Each domain layers firm standards and per-client overrides on top of Microsoft's vendored skills.",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "license": "Proprietary",
   "keywords": [
     "fabric",
@@ -15,7 +15,7 @@
   "skills": [
     "./skills/semantic-model",
     "./skills/report",
-    "./skills/standards",
+    "./skills/<domain>/SKILL.md",
     "./skills/engagement-workflow",
     "./vendor/skills-for-fabric/plugins/powerbi-authoring/skills/semantic-model-authoring",
     "./vendor/skills-for-fabric/plugins/powerbi-authoring/skills/powerbi-report-planning",

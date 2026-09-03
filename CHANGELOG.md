@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.0] - 2026-09-02
+### Changed — one file per domain
+- `skills/standards/` removed. Each domain's rules now live inside its own orchestrator,
+  `skills/<domain>/SKILL.md`, in fixed sections: §1 context · §2 layers · §3 overrides of Microsoft ·
+  §4 firm additions · §5 subagents · §6 output. `naming.yaml`, `bpa-rules.json` and
+  `references/rls-patterns.md` sit beside the model skill; `theme.json` beside the report skill.
+- Convention: a `SKILL.md` exists only where the agent is meant to be invoked.
+
 ## [0.4.2] - 2026-09-02
 ### Changed — standards are now the firm's delta on Microsoft
 - Removed every rule that merely repeated Microsoft's vendored guidance (star schema, hidden keys,
@@ -14,7 +22,7 @@
 
 ## [0.4.1] - 2026-09-02
 ### Changed — fewer files
-- `skills/standards/` is now `SKILL.md` (index + overrides table), `semantic-model.md`, `report.md`,
+- `skills/<domain>/SKILL.md` is now `SKILL.md` (index + overrides table), `semantic-model.md`, `report.md`,
   plus the two machine-readable rule files moved in from `rules/` (folder removed).
 - `/build-report` removed (the `report` orchestrator covers it); `/review-model` → `/review`, handles
   models and reports.
@@ -22,7 +30,7 @@
 ## [0.4.0] - 2026-09-02
 ### Changed — genericised for more domains
 - Dropped the `fsm-` prefix everywhere; plugin renamed `fabric-lifecycle-agents`.
-- One `skills/standards/` folder holds every firm rule (`modeling.md`, `dax.md`, `report.md`) and
+- One `skills/<domain>/SKILL.md` folder holds every firm rule (`modeling.md`, `dax.md`, `report.md`) and
   **`overrides.md`** — the single list of departures from Microsoft (replaces `rules/precedence.md`).
   Domain orchestrators (`skills/semantic-model`, `skills/report`) contain routing only.
 - Rule ids are domain-prefixed and no longer look like Microsoft's: `MS-*` → `MOD-*`, `DX-*` → `DAX-*`,
@@ -53,7 +61,7 @@
 ## [0.1.0] - 2026-09-02
 ### Added
 - **MOD-00** rule zero: TMDL/PBIP is the only authoring path, no live edits; Modeling MCP is read-only.
-  Overrides Microsoft's Tier 1 (logged in `skills/standards/SKILL.md § Overrides`); enforced by `hooks/pre-tool-use.sh`.
+  Overrides Microsoft's Tier 1 (logged in `skills/<domain>/SKILL.mdSKILL.md § Overrides`); enforced by `hooks/pre-tool-use.sh`.
 - Initial sample repo: orchestrator skill, firm standards, engagement workflow, review/deploy skills,
   subagents, hooks, commands, rules, evals scaffold, upstream sync workflow.
 - Vendored `microsoft/skills-for-fabric` as a pinned submodule.

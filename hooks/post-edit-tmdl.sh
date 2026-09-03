@@ -15,10 +15,10 @@ case "$FILE" in
   *) exit 0 ;;
 esac
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
-python3 "$ROOT/scripts/lint-tmdl.py" "$FILE" "$ROOT/skills/standards/naming.yaml" || true
+python3 "$ROOT/scripts/lint-tmdl.py" "$FILE" "$ROOT/skills/semantic-model/naming.yaml" || true
 DEF_DIR="$(dirname "$FILE")"; while [ "$(basename "$DEF_DIR")" != "definition" ] && [ "$DEF_DIR" != "/" ]; do DEF_DIR="$(dirname "$DEF_DIR")"; done
 if command -v TabularEditor.exe >/dev/null 2>&1 && [ "$DEF_DIR" != "/" ]; then
-  TabularEditor.exe "$DEF_DIR" -A "$ROOT/skills/standards/bpa-rules.json" -V 2>&1 | tail -n 20
+  TabularEditor.exe "$DEF_DIR" -A "$ROOT/skills/semantic-model/bpa-rules.json" -V 2>&1 | tail -n 20
 else
   echo "[hook] BPA skipped (Tabular Editor CLI not on PATH). Reviewer will run it."
 fi

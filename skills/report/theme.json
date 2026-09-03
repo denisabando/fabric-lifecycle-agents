@@ -1,0 +1,8 @@
+{
+  "name": "Firm default",
+  "dataColors": ["#0f6cbd", "#7c3aed", "#15803d", "#b45309", "#c2410c", "#475569"],
+  "background": "#ffffff",
+  "foreground": "#1f2a37",
+  "tableAccent": "#0f6cbd",
+  "textClasses": { "title": { "fontFace": "Segoe UI Semibold", "fontSize": 14 }, "label": { "fontFace": "Segoe UI", "fontSize": 10 } }
+}

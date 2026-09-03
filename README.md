@@ -37,11 +37,16 @@ client override  >  firm standards  >  Microsoft skill  >  model's own judgement
 
 Microsoft's skill says **how** (tool routing, TMDL syntax, MCP calls, deployment mechanics).
 Firm skills say **what good looks like** (naming, structure, DAX style, review gates).
-Client overrides adjust both for one engagement.
+Client overrides adjust both for one engagement. Precedence inside the repo:
 
-Three layers, three places, and "overrides" means the same thing at each: Microsoft's skills in
-`vendor/`; the firm's standards in `skills/standards/` with every departure from Microsoft in the
-overrides table at the top of each domain file; the client's exceptions in `clients/<code>/overrides.md`.
+```
+client override  >  skills/<domain>/SKILL.md §3–4  >  Microsoft skill (vendor/)  >  agent's own judgement
+```
+
+Three layers, three places: Microsoft's skills in `vendor/`; the firm's rules in each domain's
+`skills/<domain>/SKILL.md`, with §3 the table of departures from Microsoft and §4 the additions; the
+client's exceptions in `clients/<code>/overrides.md`. A `SKILL.md` exists only where the agent is meant
+to be invoked — everything else is plain reference material.
 
 **Rule zero (MOD-00): TMDL/PBIP is the only authoring path — no live edits.** The model of record
 is the TMDL in the client's git repo; every change is a diff. Microsoft's skill prefers live
@@ -52,9 +57,8 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | Path | Owner | Purpose |
 | --- | --- | --- |
 | `vendor/skills-for-fabric/` | Microsoft | Git submodule, pinned SHA, **never edited** |
-| `skills/semantic-model/` | Firm | **Model domain entry point** (orchestrator only — no rules of its own) |
-| `skills/report/` | Firm | **Report domain entry point** (orchestrator only) |
-| `skills/standards/` | Firm | **Everything the firm says, three files + two rule files**: `SKILL.md` (index), `semantic-model.md` and `report.md` — each the firm's *delta* on Microsoft, with its overrides table at the top, `naming.yaml`, `bpa-rules.json` |
+| `skills/semantic-model/` | Firm | **Model domain, one file.** `SKILL.md`: routing (§1–2), overrides of Microsoft (§3), firm additions (§4), subagents, output. Beside it: `naming.yaml`, `bpa-rules.json` (machine-checkable subset), `references/rls-patterns.md` |
+| `skills/report/` | Firm | **Report domain, one file.** Same six sections; `theme.json` beside it |
 | `skills/engagement-workflow/` | Firm | Phases, gates and templates shared by every domain |
 | `agents/` | Firm | `modeler`, `reviewer` + `report-reviewer` (read-only; review steps live here), `deployer` (gates + mechanisms live here) |
 | `hooks/` | Firm | Enforcement: protect `vendor/`, lint TMDL on edit, gate prod deploys |
@@ -111,7 +115,7 @@ keeps the agent).
 
 ## Status
 
-The standards files are **drafts written to exercise the architecture**, not the practice's agreed
+The firm rules (§3–4 of each domain skill) are **drafts written to exercise the architecture**, not the practice's agreed
 position; MOD-00 (no live edits) is the one rule that came from a stated requirement.
 
 Sample / demonstration repo. Microsoft's skill is in **preview** — expect breaking changes; the
@@ -120,7 +124,7 @@ pinned SHA and the evals are the mitigation, not optional extras.
 ## Adding a domain
 
 1. `skills/<domain>/SKILL.md` — an orchestrator only: context, layer order, subagents, output block.
-2. `skills/standards/<domain>.md` — its rules with a new id prefix; `-00` is "diffable path, no live edits".
+2. `skills/<domain>/SKILL.md<domain>.md` — its rules with a new id prefix; `-00` is "diffable path, no live edits".
 3. An overrides table at the top of that file for anything that contradicts the vendored Microsoft skill — and nothing that merely repeats it.
 4. Register the Microsoft skills it uses in `.claude-plugin/plugin.json` (they are already in `vendor/`).
 5. A reviewer subagent, a hook rule if something must be enforced, fixtures + evals.

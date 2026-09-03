@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight TMDL naming linter driven by skills/standards/naming.yaml.
+"""Lightweight TMDL naming linter driven by skills/semantic-model/naming.yaml.
 Usage: lint-tmdl.py <file.tmdl> <naming.yaml>   (exit 1 on findings; prints one line per finding)
 Deliberately dependency-free: parses the handful of TMDL constructs we care about with regexes.
 """
