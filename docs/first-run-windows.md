@@ -19,6 +19,7 @@ something breaks — that is the point of the first run.
 | Power BI Desktop, PBIP preview features ON | open/verify TMDL and PBIR (Options → Preview features → *Power BI Project (.pbip) save option*, *Store semantic model using TMDL format*, *Store reports using enhanced metadata format (PBIR)*) | open a `.pbip` |
 | Azure CLI | Fabric REST via `az rest` (Microsoft's skill) | `az --version` |
 | Tabular Editor 2 (free) — optional | BPA step in the post-edit hook; otherwise "skipped" | `TabularEditor.exe` on PATH |
+| GitHub CLI (`gh`), then `gh auth login` | `/pr` opens pull requests | `gh auth status` |
 | `npm i -g @microsoft/powerbi-report-author` — optional | PBIR validate in the post-edit hook | `powerbi-report-author --version` |
 
 No Python, no bash.
@@ -84,7 +85,26 @@ Anything that does not behave as listed: write it in `OPEN-QUESTIONS.txt` with t
    if installed, a decision record under `decisions/report/`.
 3. `/review "clients/acme-demo/models/Sales Performance.Report"`.
 
-## 7. Not in scope for the first run
+## 7. Git workflow loop — proves branches, PRs and the trail
+
+Set up once on GitHub: branches `dev`, `test`, `main`; branch protection on all three (require a PR,
+require 1 approval). Point the Fabric workspace's git integration at **`dev`**, folder
+`clients/acme-demo/models`.
+
+1. In Claude Code, on `main`: `add a "# Units" measure to the acme-demo Sales model` → the agent must
+   create a `feature/…` branch first (or the hook blocks the commit — check `audit/` for the `Blocked` line).
+2. `/pr` → expect: trailers on the commit, branch pushed, a PR into `dev` with the template filled, decision
+   record and review linked. Approve and merge it on GitHub yourself.
+3. Workspace → *Update from git* → the measure appears. Refresh.
+4. **The reverse direction.** In the Fabric service, open the Sales model, rename any measure's description,
+   and use the workspace's *Source control → Commit*. Pull `dev` locally.
+5. `node scripts/check-trail.js clients/acme-demo --since main` → the workspace commit is listed as
+   UNATTRIBUTED (no trailers, no decision record). `/review clients/acme-demo/models/Sales.SemanticModel`
+   should surface the same finding.
+6. Try `git push origin main` through the agent → blocked. Open a PR `dev → main` on GitHub instead; that is
+   the prod deployment path.
+
+## 8. Not in scope for the first run
 
 Real client repo layout, service principal auth, `byConnection` rebinding, deployment pipelines,
 Copilot readiness (needs a larger SKU than F2), data-read enforcement. All in `OPEN-QUESTIONS.txt`.

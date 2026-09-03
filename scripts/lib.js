@@ -86,4 +86,23 @@ function walk(dir, pred, acc = []) {
   return acc;
 }
 
-module.exports = { PLUGIN_ROOT, PROJECT_DIR, norm, readStdinJson, clientRoot, readYamlLite, appendAudit, nowIso, todayCompact, onPath, git, walk };
+/** Branches the agent may never commit to or push: git.default_branch + every environment branch. */
+function protectedBranches(root) {
+  const y = readYamlLite(path.join(root, "engagement.yaml"));
+  const set = new Set();
+  if (y.git && y.git.default_branch) set.add(String(y.git.default_branch));
+  // environments is a list; readYamlLite flattens one level, so scan the raw file for `branch:` lines under environments
+  try {
+    const txt = fs.readFileSync(path.join(root, "engagement.yaml"), "utf8");
+    let inEnv = false;
+    for (const line of txt.split(/\r?\n/)) {
+      if (/^environments:/.test(line)) { inEnv = true; continue; }
+      if (inEnv && /^\S/.test(line)) inEnv = false;
+      const m = inEnv && line.match(/^\s+branch:\s*(\S+)/); if (m) set.add(m[1]);
+    }
+  } catch {}
+  return set;
+}
+function currentBranch(cwd) { return git("rev-parse --abbrev-ref HEAD", cwd); }
+
+module.exports = { protectedBranches, currentBranch, PLUGIN_ROOT, PROJECT_DIR, norm, readStdinJson, clientRoot, readYamlLite, appendAudit, nowIso, todayCompact, onPath, git, walk };

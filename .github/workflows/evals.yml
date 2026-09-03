@@ -24,6 +24,9 @@ jobs:
         run: |
           node -e "for (const f of ['skills/semantic-model/bpa-rules.json','.claude-plugin/plugin.json','hooks/hooks.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"
 
+      - name: Trail check on the demo client (report only — history predates the trailers)
+        run: node scripts/check-trail.js clients/acme-demo --report-only
+
       - name: Scenario evals (agent-in-the-loop)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

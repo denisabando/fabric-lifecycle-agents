@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.0] - 2026-09-03
+### Added — git workflow
+- One branch per environment (`environments[].branch`) and a `git:` block in `engagement.yaml`.
+- Pre-tool-use guard: no commit / push / merge on environment branches, no force-push anywhere.
+- `/pr`: trailers, push the feature branch, open the PR with `gh` from the PR template.
+- `scripts/check-trail.js`: lists commits touching `models/` without `Decision:` / `Agent-Session:`
+  trailers or a decision record — i.e. changes committed from the Fabric workspace UI. Runs in CI and `/review`.
+- `.github/pull_request_template.md` (repo and client template). Deployer: `git_integration` deploys
+  are PR merges by a human; the chat token remains only for non-git methods.
+
 ## [0.8.1] - 2026-09-03
 ### Added
 - `docs/first-run-windows.md` ordered checklist; `.gitattributes`; `clients/acme-demo/models/Sales.pbip`

@@ -62,7 +62,7 @@ authoring through the Modeling MCP (its Tier 1); this repo overrides that and us
 | `skills/engagement-workflow/` | Firm | Phases, gates and templates shared by every domain |
 | `agents/` | Firm | `modeler`, `reviewer` + `report-reviewer` (read-only; review steps live here), `deployer` (gates + mechanisms live here) |
 | `hooks/` | Firm | Enforcement (protect `vendor/`, lint on edit, gate prod deploys) and the mechanical audit trail (`audit.js`, `usage.js`, `stop-check.js`) |
-| `commands/` | Firm | `/new-engagement`, `/review`, `/sync-upstream` |
+| `commands/` | Firm | `/new-engagement`, `/review`, `/pr`, `/sync-upstream` |
 | `clients/` | Engagement | `_template/` is committed; real client folders are git-ignored (see below) |
 | `evals/` | Firm | Scenario evals + fixture PBIP models run on every PR |
 | `.github/workflows/` | Firm | Weekly upstream sync, evals on PR, release on tag |
@@ -104,6 +104,20 @@ Windows box and the test tenant.
 
 The orchestrator refuses to build before a spec is approved and refuses to deploy to a workspace
 tagged `prod` in `engagement.yaml` without an explicit human confirmation.
+
+## Git workflow
+
+One branch per environment, one Fabric workspace per branch. `engagement.yaml` maps `dev` → `dev`,
+`test` → `test`, `prod` → `main`. The agent works only on `feature/*` branches and opens pull requests
+(`/pr`, via GitHub's `gh` CLI); the pre-tool-use hook refuses commits, pushes or merges on any
+environment branch and refuses force-push everywhere. A human merges; the workspace picks the change
+up with *Update from git*. This replaces the chat token as the production gate for the
+`git_integration` method — add branch protection on GitHub so the same holds for humans.
+
+Because Fabric git integration is two-way, someone can still edit in the service and commit from the
+workspace UI. That commit has no hook, no decision record and no review. `scripts/check-trail.js
+<client-root>` lists every commit touching `models/` that lacks the `Decision:` / `Agent-Session:`
+trailers or whose decision record is missing; it runs in CI on every PR and in `/review`.
 
 ## Audit trail
 

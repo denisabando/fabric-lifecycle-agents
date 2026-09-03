@@ -10,11 +10,20 @@ tenant: <your-test-tenant>.onmicrosoft.com      # <-- FILL: Entra tenant domain 
 environments:
   - name: dev
     workspace: "<your Fabric workspace name>"   # <-- FILL: the F2 workspace; connect it to this repo's clients/acme-demo/models on main
+    branch: dev                       # the dev workspace's git integration tracks this branch
   - name: test
     workspace: "Acme BI - Test"                 # does not need to exist for the first run
+    branch: test
   - name: prod
     workspace: "Acme BI"                        # does not need to exist; prod gate is exercised by refusing
+    branch: main
     prod: true
+git:
+  default_branch: main                # protected; the prod workspace tracks it
+  branch_prefix: feature/             # the agent works only on branches with this prefix
+  require_pr: true                    # changes reach an environment branch only by pull request
+  reviewers: []                       # GitHub handles to request on /pr, e.g. [alice, bob]
+  attributed_authors: []              # emails allowed to commit to models/ without trailers (CI bots)
 deployment:
   method: git_integration             # first run: Fabric workspace <-> GitHub git integration on clients/acme-demo/models
   refresh_after_deploy: true

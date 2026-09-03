@@ -3,7 +3,7 @@
 // Every block is also recorded in the audit trail (event "Blocked").
 "use strict";
 const path = require("path");
-const { readStdinJson, norm, clientRoot, appendAudit, nowIso, todayCompact } = require("../scripts/lib.js");
+const { readStdinJson, norm, clientRoot, appendAudit, nowIso, todayCompact, protectedBranches, currentBranch } = require("../scripts/lib.js");
 
 const input = readStdinJson();
 const tool = input.tool_name || "";
@@ -39,7 +39,25 @@ if (/(^|\/)vendor\//.test(filePath))
 if (tool === "Bash" && /(>|>>|sed -i|tee|rm |del |mv |move |cp |copy |Set-Content|Out-File)[^"]*vendor\//.test(command))
   block("BLOCKED: shell write into vendor/ (read-only submodule).");
 
-// 2. prod deployments need today's confirmation token
+// 1b. git workflow — never commit to or push a protected branch; never force-push; never push to prod branch
+if (tool === "Bash" && /\bgit\s+(commit|push|merge|rebase|reset\s+--hard|branch\s+-[dD])\b/.test(command)) {
+  const root = clientRoot(filePath);
+  if (root) {
+    const prot = protectedBranches(root);
+    const cur = currentBranch(root);
+    if (/\bgit\s+commit\b/.test(command) && prot.has(cur))
+      block(`BLOCKED: you are on protected branch '${cur}'. Create a feature branch (git checkout -b feature/<date>-<slug>) and open a pull request (/pr). Environment branches change only by PR.`);
+    if (/\bgit\s+push\b/.test(command)) {
+      if (/--force|-f\b|\+[\w\/-]+/.test(command)) block("BLOCKED: force-push is never allowed on an engagement repo.");
+      for (const b of prot) if (new RegExp(`\\bgit\\s+push\\b[^\\n]*\\b(origin\\s+)?${b.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(\\s|:|$)`).test(command) || (prot.has(cur) && !/\s\S+\s+\S+/.test(command.replace(/^.*git\s+push/, ""))))
+        block(`BLOCKED: pushing to protected branch '${b}' directly. Push your feature branch and open a pull request (/pr).`);
+    }
+    if (/\bgit\s+(merge|rebase)\b/.test(command) && prot.has(cur))
+      block(`BLOCKED: merging into protected branch '${cur}' locally. Merges into environment branches happen through an approved pull request on GitHub.`);
+  }
+}
+
+// 2. prod deployments need today's confirmation token (non-git deployment methods only)
 if (/updateDefinition|deploymentPipelines\/.*\/deploy|--target[ =]prod|prod_workspace/i.test(argsText)) {
   const token = new RegExp(`DEPLOY-PROD-[a-z0-9-]+-${todayCompact()}`);
   if (!token.test(argsText))

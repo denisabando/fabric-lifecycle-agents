@@ -12,9 +12,9 @@ that artefact exists (and, where marked, is approved). Gates are also enforced b
 | - | ----- | -------- | ------------------- | -------- |
 | 1 | Discovery | `requirements.md` (from `templates/requirements.md`) | consultant marks `status: complete` | — |
 | 2 | Model spec | `spec.md` (from `templates/model-spec.md`) | **client sign-off**: `status: approved` + approver + date | — |
-| 3 | Build | PBIP project under `models/<Model>.SemanticModel/` — TMDL in git | all TMDL committed; post-edit hook clean | `modeler` |
+| 3 | Build | PBIP project under `models/<Model>.SemanticModel/` — TMDL in git, on a `feature/` branch | `/pr` opened into the dev branch; hook checks clean | `modeler` |
 | 4 | Review | `reviews/<Model>-<yyyymmdd>.md` (from `templates/review-report.md`) | **BPA pass** (no `Error` severity) + checklist complete | `reviewer` |
-| 5 | Deploy | `deployments/<Model>-<env>-<yyyymmdd>.md` | **prod confirmation token** for prod | `deployer` |
+| 5 | Deploy | `deployments/<Model>-<env>-<yyyymmdd>.md` | PR into the environment's branch merged by a human; workspace *Update from git* | `deployer` |
 | 6 | Handover | `handover/<Model>/` (model docs generated from TMDL + BPA report + deployment record) | client acceptance | — |
 
 ## Report track (downstream domain)
@@ -29,7 +29,7 @@ the new sha and Review reopens if anything broke.
 | R2 | Design | design brief in the spec (Microsoft `powerbi-report-design`) | consultant accepts | — |
 | R3 | Build | `models/<Report>.Report/definition/**` PBIR in git | `powerbi-report-author validate` + `check-report-bindings.js --at <model_commit>` clean | (report) |
 | R4 | Review | `reviews/<Report>-report-<yyyymmdd>.md` | `result: pass` | `report-reviewer` |
-| R5 | Deploy | `deployments/<Report>-<env>-<yyyymmdd>.md` | model already in that env; prod token | `deployer` |
+| R5 | Deploy | `deployments/<Report>-<env>-<yyyymmdd>.md` | model already in that env; PR into the env branch merged | `deployer` |
 | R6 | Handover | added to the model's handover pack | client acceptance | — |
 
 ## Phase notes
@@ -60,6 +60,17 @@ to type the confirmation token printed by the hook.
 **Handover.** Generate documentation from TMDL (tables, columns, measures with descriptions,
 relationships diagram), bundle the latest review report and deployment record, and produce the
 client-facing pack from `templates/handover.md`.
+
+## Git workflow (all domains)
+
+One branch per environment (`engagement.yaml: environments[].branch`, default `dev` / `test` / `main`),
+each Fabric workspace's git integration tracking its branch. The agent works only on `feature/*` branches
+and never commits to, pushes to, or merges into an environment branch — the pre-tool-use hook refuses.
+Work reaches `dev` by `/pr`; `test` and `main` by PRs a human approves. Every commit touching `models/`
+carries `Decision:` and `Agent-Session:` trailers; `scripts/check-trail.js` lists any that do not —
+usually a change made in the Fabric service and committed from the workspace, which bypassed the agent
+and needs review before it goes further. Configure branch protection on GitHub for the environment
+branches (the plugin cannot enforce that side).
 
 ## Status check
 

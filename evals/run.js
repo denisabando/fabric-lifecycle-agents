@@ -63,6 +63,31 @@ say("== static: usage hook smoke test (synthetic transcript)");
   const rep = run([path.join(ROOT, "scripts/usage-report.js"), t, "--by", "model"]); process.stdout.write(rep.stdout.split(/\r?\n/).slice(-3).join("\n") + "\n");
   fs.rmSync(t, { recursive: true, force: true }); }
 
+say("== static: trail check (temp repo: one attributed commit, one workspace-style commit)");
+{ const t = fs.mkdtempSync(path.join(os.tmpdir(), "fla-trail-"));
+  const sh = (c) => spawnSync(c, [], { cwd: t, shell: true, encoding: "utf8", env: { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@x", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@x" } });
+  sh("git init -q -b dev");
+  fs.copyFileSync(path.join(ROOT, "clients/acme-demo/engagement.yaml"), path.join(t, "engagement.yaml"));
+  fs.mkdirSync(path.join(t, "models"), { recursive: true }); fs.mkdirSync(path.join(t, "decisions/semantic-model"), { recursive: true });
+  fs.writeFileSync(path.join(t, "models/a.tmdl"), "table A\n"); fs.writeFileSync(path.join(t, "decisions/semantic-model/2026-01-01-a.md"), "---\nsession: s1\n---\n");
+  fs.writeFileSync(path.join(t, "msg.txt"), "model(A): add\n\nDecision: decisions/semantic-model/2026-01-01-a.md\nAgent-Session: s1\n");
+  sh('git add models decisions engagement.yaml && git commit -q -F msg.txt');
+  fs.writeFileSync(path.join(t, "models/a.tmdl"), "table A\n\tisHidden\n");
+  sh('git add -A && git commit -q -m "Workspace commit from Fabric"');
+  const tr = spawnSync(node, [path.join(ROOT, "scripts/check-trail.js"), t], { encoding: "utf8" });
+  const okT = tr.status === 1 && /2 commit\(s\).*1 unattributed/.test(tr.stdout);
+  say(okT ? "trail: 1 of 2 commits unattributed, exit 1 — ok" : `trail: unexpected — exit ${tr.status}\n${tr.stdout}`); if (!okT) fail = 1;
+  // branch guard: commit on protected branch 'dev' must be blocked; on feature/x allowed
+  const blk = hookRun("pre-tool-use.js", { session_id: "t", tool_name: "Bash", tool_input: { command: "git commit -m x" } }, { FLA_CLIENT_ROOT: t });
+  sh("git checkout -q -b feature/x");
+  const okc = hookRun("pre-tool-use.js", { session_id: "t", tool_name: "Bash", tool_input: { command: "git commit -m x" } }, { FLA_CLIENT_ROOT: t });
+  const pm = hookRun("pre-tool-use.js", { session_id: "t", tool_name: "Bash", tool_input: { command: "git push origin main" } }, { FLA_CLIENT_ROOT: t });
+  const pf = hookRun("pre-tool-use.js", { session_id: "t", tool_name: "Bash", tool_input: { command: "git push --force origin feature/x" } }, { FLA_CLIENT_ROOT: t });
+  const pok = hookRun("pre-tool-use.js", { session_id: "t", tool_name: "Bash", tool_input: { command: "git push -u origin feature/x" } }, { FLA_CLIENT_ROOT: t });
+  const okG = blk.status === 2 && okc.status === 0 && pm.status === 2 && pf.status === 2 && pok.status === 0;
+  say(okG ? "branch guard: commit on dev blocked, on feature/x allowed; push main blocked, force blocked, push feature ok" : `branch guard: unexpected (${blk.status},${okc.status},${pm.status},${pf.status},${pok.status})`); if (!okG) fail = 1;
+  fs.rmSync(t, { recursive: true, force: true }); }
+
 say("== scenarios");
 if (onPath("claude") && process.env.ANTHROPIC_API_KEY) {
   fs.mkdirSync(path.join(ROOT, "evals/out"), { recursive: true });

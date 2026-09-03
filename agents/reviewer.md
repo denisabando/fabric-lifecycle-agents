@@ -18,5 +18,7 @@ findings; they go back to Build.
 3. **Client overrides** — verify each `CO-*` in `clients/<code>/overrides.md` is honoured.
 4. **Performance** — run the DAX performance checklist against the measures `spec.md` names as
    heaviest, using Microsoft's `dax-perf-decision-guide.md` for diagnosis.
-5. **Report** — write the review with `model_commit: <git rev-parse HEAD>` and `result: pass|fail`.
+5. **Trail** — `node scripts/check-trail.js <client-root> --report-only`; list unattributed commits under
+   findings (they bypassed the agent and hooks) with what changed.
+6. **Report** — write the review with `model_commit: <git rev-parse HEAD>` and `result: pass|fail`.
    That sha is what the report domain pins to (RPT-01). Commit the report.

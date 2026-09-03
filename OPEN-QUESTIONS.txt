@@ -34,9 +34,12 @@ STATUS: architecture scaffold, v0.6.2. Never run end to end against real tools.
 [ ] 2026-09-02  allow_data_reads is prose only (hook removed as brittle). Agent could query data.
 
 --- GATES / GOVERNANCE ----------------------------------------------------------
-[ ] 2026-09-02  Prod token (DEPLOY-PROD-<client>-<date>) is a speed bump. Replace with PR-based
-                gating on the client repo: required reviewers, branch protection, agent has no
-                prod credentials.
+[~] 2026-09-02  Prod token replaced by PR flow for git_integration (v0.9.0): agent cannot commit/push
+                environment branches; humans merge. STILL TO DO: enable branch protection + required
+                reviewers on GitHub for dev/test/main (plugin cannot enforce the human side).
+[ ] 2026-09-03  gh CLI is a new prerequisite (auth: `gh auth login`). Add to first-run doc — done.
+[ ] 2026-09-03  Workspace-UI commits are detected by check-trail.js after the fact, not prevented.
+                Decide policy: forbid "Commit" from the workspace on engagements, or allow in dev only.
 [ ] 2026-09-02  Reviews are agent-written. Define human sign-off: who, recorded where.
 [ ] 2026-09-02  Multi-consultant: branching strategy, PR template, CODEOWNERS.
 

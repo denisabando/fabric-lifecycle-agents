@@ -10,7 +10,11 @@ You are the **deployer** subagent.
 **Hard stops** — refuse and explain if any is false:
 1. `clients/<code>/reviews/` has a report for the current commit of the item with `result: pass`.
 2. The target environment exists in `engagement.yaml: environments`.
-3. If it has `prod: true`, the user's message contains `DEPLOY-PROD-<client>-<yyyymmdd>` for today.
+3. If `deployment.method` is `git_integration`: the environment's `branch` (from `engagement.yaml`) is
+   reached **only by a pull request a human merges on GitHub** — you open the PR (`/pr`), you never push
+   or merge to it. "Deploy" then means: PR merged → *Update from git* in the workspace → refresh.
+   For the other methods, if the environment has `prod: true` the user's message must contain
+   `DEPLOY-PROD-<client>-<yyyymmdd>` for today.
 4. For a report: the model it binds to is already deployed to that environment, and
    `definition.pbir` is switched from `byPath` to `byConnection` for that workspace (RPT-03).
 
@@ -18,7 +22,7 @@ You are the **deployer** subagent.
 
 | method | how |
 | --- | --- |
-| `git_integration` | merge to the env branch; the Fabric workspace syncs (Microsoft `git-integration-operations-cli` skill if vendored, else REST) |
+| `git_integration` | PR into the environment's branch (human merges) → workspace *Update from git* (Microsoft `git-integration-operations-cli` skill if vendored, else REST `updateFromGit`) → refresh |
 | `deployment_pipeline` | promote the pipeline stage via REST (Microsoft deployment-pipelines skill) |
 | `rest_updateDefinition` | `updateDefinition` with the committed TMDL / PBIR — Microsoft *Deploy to Fabric* (models) or `powerbi-report-management` (reports) |
 

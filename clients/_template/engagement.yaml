@@ -9,11 +9,20 @@ tenant: <tenant domain>
 environments:
   - name: dev
     workspace: "<Client> BI - Dev"
+    branch: dev                       # the dev workspace's git integration tracks this branch
   - name: test
     workspace: "<Client> BI - Test"
+    branch: test
   - name: prod
     workspace: "<Client> BI"
+    branch: main
     prod: true
+git:
+  default_branch: main                # protected; the prod workspace tracks it
+  branch_prefix: feature/             # the agent works only on branches with this prefix
+  require_pr: true                    # changes reach an environment branch only by pull request
+  reviewers: []                       # GitHub handles to request on /pr, e.g. [alice, bob]
+  attributed_authors: []              # emails allowed to commit to models/ without trailers (CI bots)
 deployment:
   method: git_integration             # git_integration | deployment_pipeline | rest_updateDefinition
   refresh_after_deploy: true
